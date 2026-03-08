@@ -4,8 +4,7 @@ import { api } from '../lib/api'
 import { useAuth } from '../auth/AuthProvider.jsx'
 
 export function RegisterPage() {
-  const nav = useNavigate()
-  const { register } = useAuth()
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

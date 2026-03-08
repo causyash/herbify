@@ -359,18 +359,7 @@ export function AdminProductsPage() {
                     <div className="flex justify-end gap-2">
                       <button
                         type="button"
-                        onClick={() => {
-                          setEditingId(String(p._id))
-                          setName(p.name || '')
-                          setSlug(p.slug || '')
-                          setDescription(p.description || '')
-                          setIngredientsText((p.ingredients || []).join('\n'))
-                          setTagsText((p.tags || []).join('\n'))
-                          setPrice(p.price || 0)
-                          setStock(p.stock || 0)
-                          setCategoryId(p.categoryId?._id ? String(p.categoryId._id) : '')
-                          setImageUrl(p.images?.[0] || '')
-                        }}
+                        onClick={() => onEdit(p)}
                         className="rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50"
                       >
                         Edit

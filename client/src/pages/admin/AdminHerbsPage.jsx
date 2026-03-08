@@ -339,18 +339,7 @@ export function AdminHerbsPage() {
                     <div className="flex justify-end gap-2">
                       <button
                         type="button"
-                        onClick={() => {
-                          setEditingId(String(h._id))
-                          setName(h.name || '')
-                          setSlug(h.slug || '')
-                          setShortDescription(h.shortDescription || '')
-                          setDescription(h.description || '')
-                          setUsesText((h.uses || []).join('\n'))
-                          setBenefitsText((h.benefits || []).join('\n'))
-                          setPrice(h.price || 0)
-                          setStock(h.stock || 0)
-                          setImageUrl(h.images?.[0] || '')
-                        }}
+                        onClick={() => onEdit(h)}
                         className="rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50"
                       >
                         Edit
