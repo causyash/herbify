@@ -3,7 +3,7 @@
   base = "client"
   
   # The build command for Vite
-  command = "npm run build"
+  command = "npm install @rollup/rollup-linux-x64-gnu --no-save && npm run build"
   
   # The directory to publish
   publish = "dist"
