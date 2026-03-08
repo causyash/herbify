@@ -1,0 +1,257 @@
+const express = require("express");
+const { z } = require("zod");
+
+const { requireAuth, requireAdmin } = require("../middleware/auth");
+const { Category } = require("../models/Category");
+const { Herb } = require("../models/Herb");
+const { Product } = require("../models/Product");
+const { ContactMessage } = require("../models/ContactMessage");
+const { Order } = require("../models/Order");
+
+const router = express.Router();
+router.use(requireAuth, requireAdmin);
+
+function dupKey(res, err) {
+  if (err && err.code === 11000) return res.status(409).json({ message: "Duplicate key" });
+  throw err;
+}
+
+// Categories
+router.get("/categories", async (req, res) => {
+  const items = await Category.find({}).sort({ createdAt: -1 }).lean();
+  res.json({ items });
+});
+
+router.post("/categories", async (req, res) => {
+  const parsed = z
+    .object({
+      name: z.string().min(2).max(120),
+      slug: z.string().min(1).max(140).optional(),
+      parentId: z.string().nullable().optional(),
+    })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  try {
+    const doc = await Category.create({
+      name: parsed.data.name,
+      slug: parsed.data.slug,
+      parentId: parsed.data.parentId || null,
+    });
+    res.status(201).json({ item: doc });
+  } catch (err) {
+    return dupKey(res, err);
+  }
+});
+
+router.put("/categories/:id", async (req, res) => {
+  const parsed = z
+    .object({
+      name: z.string().min(2).max(120),
+      slug: z.string().min(1).max(140).optional(),
+      parentId: z.string().nullable().optional(),
+    })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  try {
+    const doc = await Category.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          name: parsed.data.name,
+          ...(parsed.data.slug ? { slug: parsed.data.slug } : {}),
+          parentId: parsed.data.parentId || null,
+        },
+      },
+      { new: true }
+    );
+    if (!doc) return res.status(404).json({ message: "Not found" });
+    res.json({ item: doc });
+  } catch (err) {
+    return dupKey(res, err);
+  }
+});
+
+router.delete("/categories/:id", async (req, res) => {
+  const doc = await Category.findByIdAndDelete(req.params.id);
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ ok: true });
+});
+
+// Herbs
+router.get("/herbs", async (req, res) => {
+  const items = await Herb.find({}).sort({ createdAt: -1 }).lean();
+  res.json({ items });
+});
+
+router.post("/herbs", async (req, res) => {
+  const parsed = z
+    .object({
+      name: z.string().min(2).max(160),
+      slug: z.string().min(1).max(180).optional(),
+      shortDescription: z.string().min(2).max(280),
+      description: z.string().min(2).max(8000),
+      uses: z.array(z.string().min(1).max(200)).optional().default([]),
+      benefits: z.array(z.string().min(1).max(200)).optional().default([]),
+      price: z.number().min(0),
+      stock: z.number().int().min(0).optional().default(0),
+      images: z.array(z.string().url()).optional().default([]),
+    })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  try {
+    const doc = await Herb.create(parsed.data);
+    res.status(201).json({ item: doc });
+  } catch (err) {
+    return dupKey(res, err);
+  }
+});
+
+router.put("/herbs/:id", async (req, res) => {
+  const parsed = z
+    .object({
+      name: z.string().min(2).max(160),
+      slug: z.string().min(1).max(180).optional(),
+      shortDescription: z.string().min(2).max(280),
+      description: z.string().min(2).max(8000),
+      uses: z.array(z.string().min(1).max(200)).optional().default([]),
+      benefits: z.array(z.string().min(1).max(200)).optional().default([]),
+      price: z.number().min(0),
+      stock: z.number().int().min(0).optional().default(0),
+      images: z.array(z.string().url()).optional().default([]),
+    })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  try {
+    const doc = await Herb.findByIdAndUpdate(req.params.id, { $set: parsed.data }, { new: true });
+    if (!doc) return res.status(404).json({ message: "Not found" });
+    res.json({ item: doc });
+  } catch (err) {
+    return dupKey(res, err);
+  }
+});
+
+router.delete("/herbs/:id", async (req, res) => {
+  const doc = await Herb.findByIdAndDelete(req.params.id);
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ ok: true });
+});
+
+// Products
+router.get("/products", async (req, res) => {
+  const items = await Product.find({})
+    .sort({ createdAt: -1 })
+    .populate({ path: "categoryId", select: "name slug parentId" })
+    .lean();
+  res.json({ items });
+});
+
+router.post("/products", async (req, res) => {
+  const parsed = z
+    .object({
+      name: z.string().min(2).max(160),
+      slug: z.string().min(1).max(180).optional(),
+      description: z.string().min(2).max(8000),
+      ingredients: z.array(z.string().min(1).max(200)).optional().default([]),
+      price: z.number().min(0),
+      stock: z.number().int().min(0).optional().default(0),
+      images: z.array(z.string().url()).optional().default([]),
+      categoryId: z.string().min(1),
+      tags: z.array(z.string().min(1).max(60)).optional().default([]),
+    })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  try {
+    const doc = await Product.create(parsed.data);
+    res.status(201).json({ item: doc });
+  } catch (err) {
+    return dupKey(res, err);
+  }
+});
+
+router.put("/products/:id", async (req, res) => {
+  const parsed = z
+    .object({
+      name: z.string().min(2).max(160),
+      slug: z.string().min(1).max(180).optional(),
+      description: z.string().min(2).max(8000),
+      ingredients: z.array(z.string().min(1).max(200)).optional().default([]),
+      price: z.number().min(0),
+      stock: z.number().int().min(0).optional().default(0),
+      images: z.array(z.string().url()).optional().default([]),
+      categoryId: z.string().min(1),
+      tags: z.array(z.string().min(1).max(60)).optional().default([]),
+    })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  try {
+    const doc = await Product.findByIdAndUpdate(
+      req.params.id,
+      { $set: parsed.data },
+      { new: true }
+    );
+    if (!doc) return res.status(404).json({ message: "Not found" });
+    res.json({ item: doc });
+  } catch (err) {
+    return dupKey(res, err);
+  }
+});
+
+router.delete("/products/:id", async (req, res) => {
+  const doc = await Product.findByIdAndDelete(req.params.id);
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ ok: true });
+});
+
+// Contacts
+router.get("/contacts", async (req, res) => {
+  const items = await ContactMessage.find({}).sort({ createdAt: -1 }).lean();
+  res.json({ items });
+});
+
+router.patch("/contacts/:id/status", async (req, res) => {
+  const parsed = z
+    .object({ status: z.enum(["new", "closed"]) })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  const doc = await ContactMessage.findByIdAndUpdate(
+    req.params.id,
+    { $set: { status: parsed.data.status } },
+    { new: true }
+  );
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ item: doc });
+});
+
+// Orders
+router.get("/orders", async (req, res) => {
+  const items = await Order.find({})
+    .sort({ createdAt: -1 })
+    .populate("userId", "name email")
+    .lean();
+  res.json({ items });
+});
+
+router.patch("/orders/:id/status", async (req, res) => {
+  const parsed = z
+    .object({ orderStatus: z.enum(["placed", "processing", "shipped", "delivered", "cancelled"]) })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  const doc = await Order.findByIdAndUpdate(
+    req.params.id,
+    { $set: { orderStatus: parsed.data.orderStatus } },
+    { new: true }
+  );
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ item: doc });
+});
+
+module.exports = { adminRouter: router };
+

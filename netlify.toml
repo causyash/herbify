@@ -1,0 +1,19 @@
+[build]
+  # Set the base directory to the frontend code
+  base = "client"
+  
+  # The build command for Vite
+  command = "npm run build"
+  
+  # The directory to publish
+  publish = "dist"
+  
+  # Bypass command: Only build if there are changes inside the `client` folder
+  # This saves build minutes!
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./"
+
+# Fallback proxy config if needed (though _redirects file often handles routing)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
