@@ -21,6 +21,7 @@ const { contactRouter } = require("./routes/contact");
 
 function createApp({ dbConnected } = {}) {
   const app = express();
+  app.set("trust proxy", 1);
 
   app.use(helmet({ crossOriginResourcePolicy: false }));
   app.use(compression());
