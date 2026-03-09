@@ -148,10 +148,10 @@ router.post("/login", async (req, res) => {
   const { password } = parsed.data;
   const email = parsed.data.email.toLowerCase();
   const user = await User.findOne({ email });
-  if (!user) return res.status(401).json({ message: "Invalid credentials" });
+  if (!user) return res.status(400).json({ message: "Invalid credentials." });
 
   const ok = await bcrypt.compare(password, user.passwordHash);
-  if (!ok) return res.status(401).json({ message: "Invalid credentials" });
+  if (!ok) return res.status(400).json({ message: "Invalid credentials." });
 
   const trustedCookie = req.cookies.trusted_device;
   const trustedUserId = trustedCookie ? verifyTrustedDeviceToken(trustedCookie) : null;
