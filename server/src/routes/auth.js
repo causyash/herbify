@@ -103,15 +103,15 @@ router.post("/login", async (req, res) => {
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-  if (user.role !== "admin" && !user.isVerified) {
-    // Send OTP if not verified
+  if (user.role !== "admin") {
+    // Send OTP for every user login
     const code = generateOTP();
     await OTP.deleteMany({ email: user.email });
     await OTP.create({ email: user.email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
     await sendOTPEmail(user.email, code);
 
     return res.status(403).json({
-      message: "Please verify your email first. OTP sent.",
+      message: "Please enter the OTP sent to your email to continue.",
       email: user.email,
       requiresVerification: true,
     });
