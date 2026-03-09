@@ -34,9 +34,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid size-9 place-items-center rounded-xl bg-emerald-600 text-white font-semibold">
-            H
-          </span>
+          <img src="/logo.png" alt="Herbify Logo" className="size-10 rounded-xl object-contain drop-shadow-sm" />
           <span className="text-lg font-semibold tracking-tight text-slate-900">
             Herbify
           </span>
