@@ -22,8 +22,12 @@ export function LoginPage() {
     setBusy(true)
     try {
       if (step === 1) {
-        await login({ email: email.trim().toLowerCase(), password })
-        nav('/')
+        const result = await login({ email: email.trim().toLowerCase(), password })
+        if (result && result.requiresVerification) {
+          setStep(2)
+        } else {
+          nav('/')
+        }
       } else {
         const verifyRes = await api.post('/api/auth/verify-otp', { 
           email: email.trim().toLowerCase(), 
@@ -36,12 +40,7 @@ export function LoginPage() {
         window.location.href = '/' // Simple refresh to sync auth
       }
     } catch (err) {
-      if (err?.response?.data?.requiresVerification) {
-        setStep(2)
-        setError('') // Clear previous error like "Invalid credentials"
-      } else {
-        setError(err?.response?.data?.message || 'Login failed')
-      }
+      setError(err?.response?.data?.message || 'Login failed')
     } finally {
       setBusy(false)
     }

@@ -20,6 +20,9 @@ export function AuthProvider({ children }) {
 
   async function login({ email, password }) {
     const res = await api.post('/api/auth/login', { email, password })
+    if (res.data.requiresVerification) {
+      return { requiresVerification: true }
+    }
     if (res.data.token) localStorage.setItem('herbify_token', res.data.token)
     setUser(res.data.user)
     return res.data.user

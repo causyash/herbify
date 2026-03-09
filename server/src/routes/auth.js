@@ -163,7 +163,7 @@ router.post("/login", async (req, res) => {
       await OTP.deleteMany({ email });
       await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
       await sendOTPEmail(email, code);
-      return res.status(403).json({ requiresVerification: true, message: "Please verify your email. OTP sent." });
+      return res.status(200).json({ requiresVerification: true, message: "Please verify your email. OTP sent." });
     } catch (err) {
       console.error("Failed to send OTP", err);
       return res.status(500).json({ message: "Failed to send verification email." });
@@ -184,8 +184,19 @@ router.post("/logout", async (req, res) => {
   res.json({ ok: true });
 });
 
-router.get("/me", requireAuth, async (req, res) => {
-  res.json({ user: req.user });
+router.get("/me", async (req, res) => {
+  const token = req.cookies.access_token || req.headers.authorization?.split(" ")[1];
+  if (!token) return res.json({ user: null });
+  
+  try {
+    const { verifyAccessToken } = require("../utils/jwt");
+    const payload = verifyAccessToken(token);
+    const user = await User.findById(payload.sub).select("-passwordHash");
+    if (!user) return res.json({ user: null });
+    res.json({ user });
+  } catch (err) {
+    res.json({ user: null });
+  }
 });
 
 module.exports = { authRouter: router };
