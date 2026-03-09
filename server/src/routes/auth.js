@@ -142,16 +142,16 @@ router.post("/resend-otp", async (req, res) => {
 router.post("/login", async (req, res) => {
   const parsed = loginSchema.safeParse(req.body);
   if (!parsed.success) {
-    return res.status(400).json({ message: "Invalid input" });
+    return res.status(400).json({ message: "Registration format error: Check if password has 6+ characters and email is valid." });
   }
 
   const { password } = parsed.data;
   const email = parsed.data.email.toLowerCase();
   const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ message: "Invalid credentials." });
+  if (!user) return res.status(400).json({ message: "No account found with this email." });
 
   const ok = await bcrypt.compare(password, user.passwordHash);
-  if (!ok) return res.status(400).json({ message: "Invalid credentials." });
+  if (!ok) return res.status(400).json({ message: "Incorrect password." });
 
   const trustedCookie = req.cookies.trusted_device;
   const trustedUserId = trustedCookie ? verifyTrustedDeviceToken(trustedCookie) : null;
