@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthProvider.jsx'
 import { useCart } from '../../cart/CartProvider.jsx'

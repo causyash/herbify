@@ -22,7 +22,10 @@ export function LoginPage() {
         await login({ email: email.trim().toLowerCase(), password })
         nav('/')
       } else {
-        await api.post('/api/auth/verify-otp', { email: email.trim().toLowerCase(), code: otp.trim() })
+        const verifyRes = await api.post('/api/auth/verify-otp', { email: email.trim().toLowerCase(), code: otp.trim() })
+        if (verifyRes.data.token) {
+          localStorage.setItem('herbify_token', verifyRes.data.token)
+        }
         window.location.href = '/' // Simple refresh to sync auth
       }
     } catch (err) {

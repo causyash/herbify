@@ -20,17 +20,20 @@ export function AuthProvider({ children }) {
 
   async function login({ email, password }) {
     const res = await api.post('/api/auth/login', { email, password })
+    if (res.data.token) localStorage.setItem('herbify_token', res.data.token)
     setUser(res.data.user)
     return res.data.user
   }
 
   async function register({ name, email, password }) {
     const res = await api.post('/api/auth/register', { name, email, password })
+    if (res.data.token) localStorage.setItem('herbify_token', res.data.token)
     setUser(res.data.user)
     return res.data.user
   }
 
   async function logout() {
+    localStorage.removeItem('herbify_token')
     await api.post('/api/auth/logout')
     setUser(null)
   }

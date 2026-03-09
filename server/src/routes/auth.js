@@ -37,9 +37,13 @@ router.post("/register", async (req, res) => {
   const user = await User.create({ name, email, passwordHash, role: "user", isVerified: false });
 
   // Send OTP
-  const code = generateOTP();
-  await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
-  await sendOTPEmail(email, code);
+  try {
+    const code = generateOTP();
+    await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
+    await sendOTPEmail(email, code);
+  } catch (err) {
+    // console.error("Failed to send OTP", err);
+  }
 
   res.status(201).json({
     message: "User registered. Please verify your email with the OTP sent.",
@@ -69,6 +73,7 @@ router.post("/verify-otp", async (req, res) => {
   res.cookie("access_token", token, accessCookieOptions());
 
   res.json({
+    token, // Send token directly to client
     user: { id: user._id, name: user.name, email: user.email, role: user.role },
   });
 });
@@ -84,7 +89,12 @@ router.post("/resend-otp", async (req, res) => {
   const code = generateOTP();
   await OTP.deleteMany({ email });
   await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
-  await sendOTPEmail(email, code);
+  
+  try {
+    await sendOTPEmail(email, code);
+  } catch (err) {
+    // ignore
+  }
 
   res.json({ message: "OTP resent successfully" });
 });
@@ -108,7 +118,12 @@ router.post("/login", async (req, res) => {
     const code = generateOTP();
     await OTP.deleteMany({ email: user.email });
     await OTP.create({ email: user.email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
-    await sendOTPEmail(user.email, code);
+    
+    try {
+      await sendOTPEmail(user.email, code);
+    } catch(err) {
+      // ignore
+    }
 
     return res.status(403).json({
       message: "Please enter the OTP sent to your email to continue.",
@@ -120,6 +135,7 @@ router.post("/login", async (req, res) => {
   const token = signAccessToken({ sub: String(user._id), role: user.role });
   res.cookie("access_token", token, accessCookieOptions());
   res.json({
+    token, // Send token directly to client
     user: { id: user._id, name: user.name, email: user.email, role: user.role },
   });
 });

@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
-import { useAuth } from '../auth/AuthProvider.jsx'
 
 export function RegisterPage() {
 
@@ -22,7 +21,10 @@ export function RegisterPage() {
         await api.post('/api/auth/register', { name, email: email.trim().toLowerCase(), password })
         setStep(2)
       } else {
-        await api.post('/api/auth/verify-otp', { email: email.trim().toLowerCase(), code: otp.trim() })
+        const verifyRes = await api.post('/api/auth/verify-otp', { email: email.trim().toLowerCase(), code: otp.trim() })
+        if (verifyRes.data.token) {
+          localStorage.setItem('herbify_token', verifyRes.data.token)
+        }
         // Use local AuthContext to update the user
         // Wait, I should use the login function if I want to be safe, but verify-otp already sets cookie.
         // Let's just refresh auth after verification.
