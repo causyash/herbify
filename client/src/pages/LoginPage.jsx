@@ -14,6 +14,7 @@ export function LoginPage() {
   const [busy, setBusy] = useState(false)
   const [step, setStep] = useState(1) // 1: credentials, 2: OTP verification
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberBrowser, setRememberBrowser] = useState(false)
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -24,7 +25,11 @@ export function LoginPage() {
         await login({ email: email.trim().toLowerCase(), password })
         nav('/')
       } else {
-        const verifyRes = await api.post('/api/auth/verify-otp', { email: email.trim().toLowerCase(), code: otp.trim() })
+        const verifyRes = await api.post('/api/auth/verify-otp', { 
+          email: email.trim().toLowerCase(), 
+          code: otp.trim(),
+          rememberBrowser
+        })
         if (verifyRes.data.token) {
           localStorage.setItem('herbify_token', verifyRes.data.token)
         }
@@ -117,18 +122,29 @@ export function LoginPage() {
             </label>
           </>
         ) : (
-          <label className="grid gap-1">
-            <span className="text-sm font-medium text-slate-800">Enter OTP</span>
-            <input
-              type="text"
-              maxLength={6}
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="rounded-xl border border-slate-300 px-3 py-2 outline-none ring-emerald-500 focus:ring-2 text-center text-lg tracking-widest"
-              placeholder="000000"
-              required
-            />
-          </label>
+          <div className="grid gap-3">
+            <label className="grid gap-1">
+              <span className="text-sm font-medium text-slate-800">Enter OTP</span>
+              <input
+                type="text"
+                maxLength={6}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="rounded-xl border border-slate-300 px-3 py-2 outline-none ring-emerald-500 focus:ring-2 text-center text-lg tracking-widest"
+                placeholder="000000"
+                required
+              />
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer mt-1">
+              <input 
+                type="checkbox" 
+                checked={rememberBrowser} 
+                onChange={(e) => setRememberBrowser(e.target.checked)} 
+                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300" 
+              />
+              <span className="text-sm font-medium text-slate-700">Don't ask again on this browser</span>
+            </label>
+          </div>
         )}
 
         {error ? (

@@ -5,7 +5,7 @@ const { z } = require("zod");
 const { User } = require("../models/User");
 const { OTP } = require("../models/OTP");
 const { generateOTP, sendOTPEmail } = require("../utils/otpService");
-const { signAccessToken } = require("../utils/jwt");
+const { signAccessToken, signTrustedDeviceToken, verifyTrustedDeviceToken } = require("../utils/jwt");
 const { accessCookieOptions } = require("../utils/cookies");
 const { requireAuth } = require("../middleware/auth");
 
@@ -78,11 +78,15 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/verify-otp", async (req, res) => {
-  const parsed = z.object({ email: z.string().email(), code: z.string().length(6) }).safeParse(req.body);
+  const parsed = z.object({ 
+    email: z.string().email(), 
+    code: z.string().length(6),
+    rememberBrowser: z.boolean().optional()
+  }).safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
 
   const email = parsed.data.email.toLowerCase();
-  const { code } = parsed.data;
+  const { code, rememberBrowser } = parsed.data;
   const otpDoc = await OTP.findOne({ email, code });
 
   if (!otpDoc) {
@@ -97,6 +101,16 @@ router.post("/verify-otp", async (req, res) => {
   const user = await User.findOne({ email });
   const token = signAccessToken({ sub: String(user._id), role: user.role });
   res.cookie("access_token", token, accessCookieOptions());
+
+  if (rememberBrowser) {
+    const trustedToken = signTrustedDeviceToken(String(user._id));
+    res.cookie("trusted_device", trustedToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    });
+  }
 
   res.json({
     token, // Send token directly to client
@@ -139,7 +153,11 @@ router.post("/login", async (req, res) => {
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-  if (user.role !== "admin") {
+  const trustedCookie = req.cookies.trusted_device;
+  const trustedUserId = trustedCookie ? verifyTrustedDeviceToken(trustedCookie) : null;
+  const isTrustedBrowser = trustedUserId === String(user._id);
+
+  if (user.role !== "admin" && !isTrustedBrowser) {
     try {
       const code = generateOTP();
       await OTP.deleteMany({ email });
