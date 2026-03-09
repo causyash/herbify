@@ -3,9 +3,13 @@ const { User } = require("../models/User");
 
 async function requireAuth(req, res, next) {
   try {
-    let token = req.cookies?.access_token;
-    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+    let token = null
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
       token = req.headers.authorization.split(" ")[1];
+    }
+
+    if (!token && req.cookies && req.cookies.access_token) {
+      token = req.cookies.access_token;
     }
     
     if (!token) return res.status(401).json({ message: "Not authenticated" });

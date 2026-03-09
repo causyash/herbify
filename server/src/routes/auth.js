@@ -36,13 +36,13 @@ router.post("/register", async (req, res) => {
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await User.create({ name, email, passwordHash, role: "user", isVerified: false });
 
-  // Send OTP
   try {
     const code = generateOTP();
     await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
     await sendOTPEmail(email, code);
   } catch (err) {
-    // console.error("Failed to send OTP", err);
+    console.error("Failed to send OTP", err);
+    return res.status(500).json({ message: "Failed to send verification email. Please try again." });
   }
 
   res.status(201).json({
@@ -86,14 +86,14 @@ router.post("/resend-otp", async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) return res.status(404).json({ message: "User not found" });
 
-  const code = generateOTP();
-  await OTP.deleteMany({ email });
-  await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
-  
   try {
+    const code = generateOTP();
+    await OTP.deleteMany({ email });
+    await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
     await sendOTPEmail(email, code);
   } catch (err) {
-    // ignore
+    console.error("Failed to resend OTP", err);
+    return res.status(500).json({ message: "Failed to send verification email. Please try again." });
   }
 
   res.json({ message: "OTP resent successfully" });
@@ -114,15 +114,14 @@ router.post("/login", async (req, res) => {
   if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
   if (user.role !== "admin") {
-    // Send OTP for every user login
-    const code = generateOTP();
-    await OTP.deleteMany({ email: user.email });
-    await OTP.create({ email: user.email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
-    
     try {
+      const code = generateOTP();
+      await OTP.deleteMany({ email: user.email });
+      await OTP.create({ email: user.email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
       await sendOTPEmail(user.email, code);
     } catch(err) {
-      // ignore
+      console.error("Failed to send login OTP", err);
+      return res.status(500).json({ message: "Failed to send login OTP email. Check backend logs." });
     }
 
     return res.status(403).json({
