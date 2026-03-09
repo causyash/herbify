@@ -63,19 +63,17 @@ router.post("/register", async (req, res) => {
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await User.create({ name, email, passwordHash, role: "user", isVerified: false });
 
-  // DEMO BYPASS: Skip OTP entirely
+  // Send OTP for normal users
   try {
-    const token = signAccessToken({ sub: String(user._id), role: user.role });
-    res.cookie("access_token", token, accessCookieOptions());
-    return res.status(201).json({
-      message: "User registered successfully.",
-      email: user.email,
-      token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role }
-    });
+    const code = generateOTP();
+    await OTP.deleteMany({ email });
+    await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
+    await sendOTPEmail(email, code);
+
+    return res.status(201).json({ message: "OTP sent for verification" });
   } catch (err) {
-    console.error("Failed to register demo user", err);
-    return res.status(500).json({ message: "Registration failed." });
+    console.error("Failed to send OTP", err);
+    return res.status(500).json({ message: "Failed to send verification email. Please try again." });
   }
 });
 
@@ -141,7 +139,20 @@ router.post("/login", async (req, res) => {
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-  // DEMO BYPASS: Return token directly without OTP
+  if (user.role !== "admin" && !user.isVerified) {
+    try {
+      const code = generateOTP();
+      await OTP.deleteMany({ email });
+      await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
+      await sendOTPEmail(email, code);
+      return res.status(403).json({ requiresVerification: true, message: "Please verify your email. OTP sent." });
+    } catch (err) {
+      console.error("Failed to send OTP", err);
+      return res.status(500).json({ message: "Failed to send verification email." });
+    }
+  }
+
+  // Admin or verified user: Return token directly
   const token = signAccessToken({ sub: String(user._id), role: user.role });
   res.cookie("access_token", token, accessCookieOptions());
   return res.json({
