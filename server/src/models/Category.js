@@ -13,9 +13,8 @@ const categorySchema = new mongoose.Schema(
 categorySchema.index({ slug: 1 }, { unique: true });
 categorySchema.index({ parentId: 1, name: 1 });
 
-categorySchema.pre("validate", function preValidate(next) {
+categorySchema.pre("validate", function preValidate() {
   if (!this.slug && this.name) this.slug = toSlug(this.name);
-  next();
 });
 
 const Category = mongoose.model("Category", categorySchema);

@@ -20,9 +20,8 @@ productSchema.index({ slug: 1 }, { unique: true });
 productSchema.index({ categoryId: 1, price: 1 });
 productSchema.index({ name: 1 });
 
-productSchema.pre("validate", function preValidate(next) {
+productSchema.pre("validate", function preValidate() {
   if (!this.slug && this.name) this.slug = toSlug(this.name);
-  next();
 });
 
 const Product = mongoose.model("Product", productSchema);

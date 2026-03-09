@@ -19,9 +19,8 @@ const herbSchema = new mongoose.Schema(
 herbSchema.index({ slug: 1 }, { unique: true });
 herbSchema.index({ name: 1 });
 
-herbSchema.pre("validate", function preValidate(next) {
+herbSchema.pre("validate", function preValidate() {
   if (!this.slug && this.name) this.slug = toSlug(this.name);
-  next();
 });
 
 const Herb = mongoose.model("Herb", herbSchema);
