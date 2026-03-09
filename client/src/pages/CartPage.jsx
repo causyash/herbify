@@ -7,11 +7,12 @@ export function CartPage() {
   const { items, subtotal, syncing, removeItem, setQty, clear } = useCart()
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
-      <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
-        Cart
-      </h1>
-      <p className="mt-1 text-slate-600">
+    <div className="min-h-screen bg-slate-50 px-4 py-16">
+      <div className="mx-auto max-w-5xl">
+        <h1 className="text-4xl font-bold tracking-tight text-slate-900">
+          Your Cart
+        </h1>
+        <p className="mt-2 text-slate-600">
         {syncing && user ? 'Syncing with your account…' : 'Review your items.'}
       </p>
 
@@ -116,6 +117,7 @@ export function CartPage() {
           </aside>
         </div>
       )}
+      </div>
     </div>
   )
 }

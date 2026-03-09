@@ -51,11 +51,12 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-10">
-      <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-4 py-16">
+      <div className="w-full max-w-md">
+      <h1 className="text-4xl font-bold tracking-tight text-slate-900 text-center">
         {step === 1 ? 'Create account' : 'Verify Email'}
       </h1>
-      <p className="mt-2 text-slate-600">
+      <p className="mt-2 text-slate-600 text-center">
         {step === 1 ? (
           <>
             Already have an account?{' '}
@@ -71,7 +72,7 @@ export function RegisterPage() {
 
       <form
         onSubmit={onSubmit}
-        className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        className="mt-8 grid gap-4 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm"
       >
         {step === 1 ? (
           <>
@@ -151,6 +152,7 @@ export function RegisterPage() {
           </button>
         )}
       </form>
+      </div>
     </div>
   )
 }

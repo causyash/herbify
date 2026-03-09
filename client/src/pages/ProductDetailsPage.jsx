@@ -37,10 +37,11 @@ export function ProductDetailsPage() {
   }, [slug])
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
-      <Link to="/products" className="text-sm font-medium text-emerald-700">
-        ← Back to products
-      </Link>
+    <div className="min-h-screen bg-slate-50 px-4 py-10">
+      <div className="mx-auto max-w-6xl">
+        <Link to="/products" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:text-emerald-800 transition mb-6">
+          &larr; Back to products
+        </Link>
 
       {loading ? (
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-700 shadow-sm">
@@ -51,11 +52,12 @@ export function ProductDetailsPage() {
           {error}
         </div>
       ) : !product ? (
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-700 shadow-sm">
+        <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-700 shadow-sm">
           Product not found.
         </div>
       ) : (
-        <div className="mt-6 grid gap-8 lg:grid-cols-2">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm lg:p-12">
+          <div className="grid gap-12 lg:grid-cols-2">
           <div className="grid gap-3">
             {mainImage ? (
               <img
@@ -123,23 +125,23 @@ export function ProductDetailsPage() {
               </button>
             </div>
 
-            <div className="mt-8 grid gap-6">
-              <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="font-semibold text-slate-900">Description</p>
-                <p className="mt-2 whitespace-pre-line text-sm text-slate-700">
+            <div className="mt-8 grid gap-8">
+              <section>
+                <h3 className="text-xl font-bold text-slate-900 border-b border-slate-200 pb-2">Description</h3>
+                <p className="mt-4 whitespace-pre-line text-slate-700 leading-relaxed">
                   {product.description}
                 </p>
               </section>
-              <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="font-semibold text-slate-900">Ingredients</p>
+              <section>
+                <h3 className="text-xl font-bold text-slate-900 border-b border-slate-200 pb-2">Ingredients</h3>
                 {product.ingredients?.length ? (
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
+                  <ul className="mt-4 list-disc space-y-2 pl-5 text-slate-700 leading-relaxed">
                     {product.ingredients.map((ing) => (
                       <li key={ing}>{ing}</li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-2 text-sm text-slate-600">
+                  <p className="mt-4 text-slate-600 italic">
                     No ingredients listed.
                   </p>
                 )}
@@ -147,7 +149,9 @@ export function ProductDetailsPage() {
             </div>
           </div>
         </div>
+        </div>
       )}
+      </div>
     </div>
   )
 }

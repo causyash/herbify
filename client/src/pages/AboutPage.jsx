@@ -1,29 +1,31 @@
 export function AboutPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+    <div className="min-h-screen bg-slate-50 px-4 py-16">
+      <div className="mx-auto max-w-4xl text-center">
+      <h1 className="text-4xl font-bold tracking-tight text-slate-900">
         About Herbify
       </h1>
-      <p className="mt-3 text-slate-700">
+      <p className="mt-4 text-lg text-slate-700 leading-relaxed">
         Herbify is a platform for learning about medicinal herbs and purchasing
         herbal products. Our mission is to make natural healing information more
         accessible and help you discover products that fit your wellness goals.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="font-semibold text-slate-900">Mission</p>
-          <p className="mt-1 text-sm text-slate-600">
+      <div className="mt-12 grid gap-6 sm:grid-cols-2 text-left">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-md">
+          <p className="text-xl font-bold text-emerald-700">Mission</p>
+          <p className="mt-3 text-slate-700 leading-relaxed text-sm">
             Provide clear, trustworthy herbal education and a quality product
-            experience.
+            experience that allows anyone to easily start their path toward natural health.
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="font-semibold text-slate-900">Vision</p>
-          <p className="mt-1 text-sm text-slate-600">
-            Support natural wellness journeys with modern, responsible tooling.
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-md">
+          <p className="text-xl font-bold text-emerald-700">Vision</p>
+          <p className="mt-3 text-slate-700 leading-relaxed text-sm">
+            Support natural wellness journeys with modern, responsible tooling, elevating the standard of botanical e-commerce.
           </p>
         </div>
+      </div>
       </div>
     </div>
   )

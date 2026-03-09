@@ -58,7 +58,8 @@ export function ProductsListPage() {
   }, [])
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="min-h-screen bg-slate-50 px-4 py-16">
+      <div className="mx-auto max-w-6xl">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
@@ -110,56 +111,65 @@ export function ProductsListPage() {
           No products found.
         </div>
       ) : (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((p) => (
             <div
               key={p.slug}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
             >
-              {p.images?.[0] ? (
-                <img
-                  src={p.images[0]}
-                  alt={p.name}
-                  className="aspect-[16/10] w-full rounded-xl object-cover"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="aspect-[16/10] w-full rounded-xl bg-slate-100" />
-              )}
-              <div className="mt-4 flex items-start justify-between gap-4">
-                <p className="text-lg font-semibold text-slate-900">{p.name}</p>
-                <p className="text-base font-semibold text-slate-900">₹ {p.price}</p>
-              </div>
-              <div className="mt-4 flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    addItem({
-                      itemType: 'product',
-                      itemId: p._id,
-                      slug: p.slug,
-                      name: p.name,
-                      price: p.price,
-                      image: p.images?.[0] || '',
-                      qty: 1,
-                    })
-                    toast.success('Added to cart')
-                  }}
-                  className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
-                >
-                  Add to cart
-                </button>
-                <Link
-                  to={`/products/${p.slug}`}
-                  className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-                >
-                  View details
-                </Link>
+              <Link to={`/products/${p.slug}`} className="relative aspect-square overflow-hidden bg-slate-100 block">
+                {p.images?.[0] ? (
+                  <img
+                    src={p.images[0]}
+                    alt={p.name}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-slate-100" />
+                )}
+                {p.stock < 10 && p.stock > 0 && (
+                  <span className="absolute left-4 top-4 rounded-full bg-amber-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+                    Low Stock
+                  </span>
+                )}
+                {p.stock === 0 && (
+                  <span className="absolute left-4 top-4 rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+                    Sold Out
+                  </span>
+                )}
+              </Link>
+              <div className="flex flex-1 flex-col p-6">
+                 <Link to={`/products/${p.slug}`}>
+                    <h4 className="font-bold text-slate-900 text-lg line-clamp-1 group-hover:text-emerald-600 transition">{p.name}</h4>
+                 </Link>
+                 <div className="mt-4 flex items-center justify-between">
+                    <p className="text-xl font-bold text-emerald-600">₹ {p.price}</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        addItem({
+                          itemType: 'product',
+                          itemId: p._id,
+                          slug: p.slug,
+                          name: p.name,
+                          price: p.price,
+                          image: p.images?.[0] || '',
+                          qty: 1,
+                        })
+                        toast.success('Added to cart')
+                      }}
+                      className="rounded-full bg-slate-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-600 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    >
+                      Add +
+                    </button>
+                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
+      </div>
     </div>
   )
 }
