@@ -63,19 +63,20 @@ router.post("/register", async (req, res) => {
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await User.create({ name, email, passwordHash, role: "user", isVerified: false });
 
+  // DEMO BYPASS: Skip OTP entirely
   try {
-    const code = generateOTP();
-    await OTP.create({ email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
-    await sendOTPEmail(email, code);
+    const token = signAccessToken({ sub: String(user._id), role: user.role });
+    res.cookie("access_token", token, accessCookieOptions());
+    return res.status(201).json({
+      message: "User registered successfully.",
+      email: user.email,
+      token,
+      user: { id: user._id, name: user.name, email: user.email, role: user.role }
+    });
   } catch (err) {
-    console.error("Failed to send OTP", err);
-    return res.status(500).json({ message: "Failed to send verification email. Please try again." });
+    console.error("Failed to register demo user", err);
+    return res.status(500).json({ message: "Registration failed." });
   }
-
-  res.status(201).json({
-    message: "User registered. Please verify your email with the OTP sent.",
-    email: user.email,
-  });
 });
 
 router.post("/verify-otp", async (req, res) => {
@@ -140,27 +141,10 @@ router.post("/login", async (req, res) => {
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-  if (user.role !== "admin") {
-    try {
-      const code = generateOTP();
-      await OTP.deleteMany({ email: user.email });
-      await OTP.create({ email: user.email, code, expiresAt: new Date(Date.now() + 10 * 60 * 1000) });
-      await sendOTPEmail(user.email, code);
-    } catch(err) {
-      console.error("Failed to send login OTP", err);
-      return res.status(500).json({ message: "Failed to send login OTP email. Check backend logs." });
-    }
-
-    return res.status(403).json({
-      message: "Please enter the OTP sent to your email to continue.",
-      email: user.email,
-      requiresVerification: true,
-    });
-  }
-
+  // DEMO BYPASS: Return token directly without OTP
   const token = signAccessToken({ sub: String(user._id), role: user.role });
   res.cookie("access_token", token, accessCookieOptions());
-  res.json({
+  return res.json({
     token, // Send token directly to client
     user: { id: user._id, name: user.name, email: user.email, role: user.role },
   });
