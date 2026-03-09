@@ -127,6 +127,14 @@ router.post("/razorpay/verify", requireAuth, async (req, res) => {
           newStock: updatedItem.stock,
         });
       }
+
+      // Check for low stock and notify Admin via Telegram
+      if (updatedItem && updatedItem.stock <= 5) {
+        sendAdminSMS(
+          `⚠️ <b>LOW STOCK ALERT:</b> Only ${updatedItem.stock} left for <b>${updatedItem.name}</b>! Please review inventory.`
+        ).catch(err => console.error("Telegram low stock alert error:", err));
+      }
+
       return updatedItem;
     });
     await Promise.all(stockUpdates);

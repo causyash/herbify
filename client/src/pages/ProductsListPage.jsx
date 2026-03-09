@@ -128,9 +128,9 @@ export function ProductsListPage() {
                 ) : (
                   <div className="h-full w-full bg-slate-100" />
                 )}
-                {p.stock < 10 && p.stock > 0 && (
-                  <span className="absolute left-4 top-4 rounded-full bg-amber-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
-                    Low Stock
+                {p.stock <= 5 && p.stock > 0 && (
+                  <span className="absolute left-4 top-4 rounded-full bg-amber-500 px-3 py-1 text-xs font-bold text-white shadow-sm animate-pulse">
+                    Only {p.stock} left!
                   </span>
                 )}
                 {p.stock === 0 && (

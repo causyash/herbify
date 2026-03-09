@@ -101,6 +101,12 @@ export function ProductDetailsPage() {
               </p>
             ) : null}
 
+            {product.stock <= 5 && product.stock > 0 && (
+              <p className="mt-3 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 animate-pulse border border-amber-200">
+                Hurry! Only {product.stock} left in stock.
+              </p>
+            )}
+
             <div className="mt-5 flex items-center gap-3">
               <span className="text-2xl font-semibold text-slate-900">
                 ₹ {product.price}
