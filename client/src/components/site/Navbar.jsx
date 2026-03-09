@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthProvider.jsx'
 import { useCart } from '../../cart/CartProvider.jsx'
-import { Menu, X, ShoppingCart, User as UserIcon } from 'lucide-react'
+import { Menu, X, ShoppingCart, User as UserIcon, Search } from 'lucide-react'
 
 const navLinkClass = ({ isActive }) =>
   `rounded-md px-3 py-2 text-sm font-medium transition ${
@@ -18,9 +18,20 @@ export function Navbar() {
   const { user, logout } = useAuth()
   const { items } = useCart()
   const location = useLocation()
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const cartCount = items.reduce((acc, item) => acc + (item.qty || 1), 0)
+
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchQuery('')
+      setIsOpen(false)
+    }
+  }
 
   // Track path to close menu when changing routes
   const [prevPath, setPrevPath] = useState(location.pathname)
@@ -57,6 +68,17 @@ export function Navbar() {
           <NavLink to="/contact" className={navLinkClass}>
             Contact
           </NavLink>
+
+          <form onSubmit={handleSearch} className="relative ml-2 flex items-center">
+            <input 
+              type="text" 
+              placeholder="Search herbs, products..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-48 xl:w-64 rounded-full bg-slate-100 px-4 py-2 pl-10 text-sm outline-none transition focus:bg-white focus:ring-2 focus:ring-emerald-500"
+            />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          </form>
 
           <div className="mx-2 h-6 w-px bg-slate-200"></div>
 
@@ -147,6 +169,17 @@ export function Navbar() {
             <NavLink to="/contact" className={mobileNavLinkClass}>
               Contact
             </NavLink>
+
+            <form onSubmit={handleSearch} className="relative mt-2">
+              <input 
+                type="text" 
+                placeholder="Search herbs, products..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl bg-slate-100 px-4 py-3 pl-11 text-sm outline-none transition focus:bg-white focus:ring-2 focus:ring-emerald-500"
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            </form>
 
             <div className="my-2 border-t border-slate-100"></div>
 

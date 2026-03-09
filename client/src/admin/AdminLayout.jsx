@@ -166,6 +166,9 @@ export function AdminLayout() {
             <NavLink to="/admin" end className={linkClass}>
               Overview
             </NavLink>
+            <NavLink to="/admin/inventory" className={linkClass}>
+              Master Inventory
+            </NavLink>
             <NavLink to="/admin/categories" className={linkClass}>
               Categories
             </NavLink>

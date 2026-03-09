@@ -14,11 +14,13 @@ import { OrderDetailsPage } from './pages/OrderDetailsPage.jsx'
 import { OrdersPage } from './pages/OrdersPage.jsx'
 import { ProductDetailsPage } from './pages/ProductDetailsPage.jsx'
 import { ProductsListPage } from './pages/ProductsListPage.jsx'
+import { SearchPage } from './pages/SearchPage.jsx'
 import { RegisterPage } from './pages/RegisterPage.jsx'
 import { AdminCategoriesPage } from './pages/admin/AdminCategoriesPage.jsx'
 import { AdminContactsPage } from './pages/admin/AdminContactsPage.jsx'
 import { AdminHerbsPage } from './pages/admin/AdminHerbsPage.jsx'
 import { AdminHomePage } from './pages/admin/AdminHomePage.jsx'
+import { AdminInventoryPage } from './pages/admin/AdminInventoryPage.jsx'
 import { AdminProductsPage } from './pages/admin/AdminProductsPage.jsx'
 import { AdminOrdersPage } from './pages/admin/AdminOrdersPage.jsx'
 import { AdminUsersPage } from './pages/admin/AdminUsersPage.jsx'
@@ -41,6 +43,7 @@ export default function App() {
 
           <Route path="/products" element={<ProductsListPage />} />
           <Route path="/products/:slug" element={<ProductDetailsPage />} />
+          <Route path="/search" element={<SearchPage />} />
 
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
@@ -59,6 +62,7 @@ export default function App() {
             }
           >
             <Route index element={<AdminHomePage />} />
+            <Route path="inventory" element={<AdminInventoryPage />} />
             <Route path="categories" element={<AdminCategoriesPage />} />
             <Route path="herbs" element={<AdminHerbsPage />} />
             <Route path="products" element={<AdminProductsPage />} />

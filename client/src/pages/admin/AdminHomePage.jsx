@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, Legend } from 'recharts'
 
 export function AdminHomePage() {
   const [stats, setStats] = useState({
@@ -157,6 +158,34 @@ export function AdminHomePage() {
                 </div>
               )}
             </div>
+
+            {/* Bestsellers Graph */}
+            {!loadingBestsellers && bestsellers.length > 0 && (
+              <div className="mt-10 pt-8 border-t border-slate-100">
+                <h3 className="text-lg font-bold tracking-tight text-slate-900 mb-6">
+                  Bestsellers Visualized
+                </h3>
+                <div className="h-[350px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={bestsellers} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                      <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 12 }} angle={-45} textAnchor="end" />
+                      <YAxis stroke="#059669" tick={{ fill: '#059669' }} />
+                      <Tooltip 
+                        cursor={{ fill: '#f8fafc' }}
+                        contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                      />
+                      <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                      <Bar dataKey="totalSold" name="Total Ordered Qty" fill="#059669" radius={[6, 6, 0, 0]}>
+                        {bestsellers.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={'#059669'} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}
