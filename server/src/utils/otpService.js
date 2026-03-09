@@ -1,5 +1,12 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
 const { env } = require("../config/env");
+
+// Force Node to use IPv4 instead of IPv6 for DNS resolution
+// This fixes the ENETUNREACH crash for outgoing SMTP requests on Render
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder("ipv4first");
+}
 
 /**
  * Generate a random 6-digit OTP
