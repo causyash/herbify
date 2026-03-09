@@ -21,6 +21,33 @@ const loginSchema = z.object({
   email: z.string().email().max(320),
   password: z.string().min(6).max(200),
 });
+// TEMPORARY BYPASS TO SETUP ADMIN FOR DEVELOPMENT (To be removed later)
+router.get("/setup-admin", async (req, res) => {
+  const emailQuery = req.query.email;
+  if (!emailQuery) return res.send("Please provide ?email=your_email@example.com in the URL");
+
+  const email = emailQuery.toLowerCase().trim();
+  const password = "password123";
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  let admin = await User.findOne({ email });
+  if (admin) {
+    admin.passwordHash = passwordHash;
+    admin.role = "admin";
+    admin.isVerified = true;
+    await admin.save();
+    return res.send(`<h2>SUCCESS</h2><p>Existing account ${email} is now an ADMiN. Your password has been reset to: <b>password123</b></p><p>Go back to the website and log in!</p>`);
+  } else {
+    await User.create({
+      name: "Admin User",
+      email,
+      passwordHash,
+      role: "admin",
+      isVerified: true
+    });
+    return res.send(`<h2>SUCCESS</h2><p>New admin account created for ${email}. Your password is: <b>password123</b></p><p>Go back to the website and log in!</p>`);
+  }
+});
 
 router.post("/register", async (req, res) => {
   const parsed = registerSchema.safeParse(req.body);
