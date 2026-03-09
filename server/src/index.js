@@ -21,7 +21,9 @@ async function main() {
 
   const io = new Server(server, {
     cors: {
-      origin: env.CLIENT_ORIGIN,
+      origin: function(origin, callback) {
+        callback(null, origin || env.CLIENT_ORIGIN || true);
+      },
       credentials: true,
     },
   });

@@ -28,7 +28,9 @@ function createApp({ dbConnected } = {}) {
 
   app.use(
     cors({
-      origin: env.CLIENT_ORIGIN,
+      origin: function (origin, callback) {
+        callback(null, origin || env.CLIENT_ORIGIN || true);
+      },
       credentials: true,
     })
   );
