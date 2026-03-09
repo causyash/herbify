@@ -139,7 +139,7 @@ router.post("/login", async (req, res) => {
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-  if (user.role !== "admin" && !user.isVerified) {
+  if (user.role !== "admin") {
     try {
       const code = generateOTP();
       await OTP.deleteMany({ email });

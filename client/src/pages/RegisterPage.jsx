@@ -1,20 +1,30 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
+import { Eye, EyeOff } from 'lucide-react'
 
 export function RegisterPage() {
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [otp, setOtp] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const [step, setStep] = useState(1) // 1: registration, 2: OTP verification
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   async function onSubmit(e) {
     e.preventDefault()
     setError('')
+    
+    if (step === 1 && password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
     setBusy(true)
     try {
       if (step === 1) {
@@ -100,16 +110,49 @@ export function RegisterPage() {
             </label>
             <label className="grid gap-1">
               <span className="text-sm font-medium text-slate-800">Password</span>
-              <input
-                type="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="rounded-xl border border-slate-300 px-3 py-2 outline-none ring-emerald-500 focus:ring-2"
-                placeholder="At least 6 characters"
-                minLength={6}
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-xl border border-slate-300 px-3 py-2 pr-10 outline-none ring-emerald-500 focus:ring-2"
+                  placeholder="At least 6 characters"
+                  minLength={6}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                  tabIndex="-1"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </label>
+            <label className="grid gap-1">
+              <span className="text-sm font-medium text-slate-800">Confirm Password</span>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full rounded-xl border border-slate-300 px-3 py-2 pr-10 outline-none ring-emerald-500 focus:ring-2"
+                  placeholder="Confirm your password"
+                  minLength={6}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                  tabIndex="-1"
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </label>
           </>
         ) : (
