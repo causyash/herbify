@@ -88,7 +88,7 @@ export function HomePage() {
               >
                 <div className="relative aspect-square overflow-hidden bg-slate-100">
                   <img
-                    src={p.images?.[0] || 'https://via.placeholder.com/400x400?text=No+Image'}
+                    src={p.images?.[0] || 'https://placehold.co/400x400?text=No+Image'}
                     alt={p.name}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                   />
@@ -177,7 +177,7 @@ export function HomePage() {
             >
               <div className="h-32 w-32 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
                  <img
-                    src={h.images?.[0] || 'https://via.placeholder.com/150x150?text=No+Image'}
+                    src={h.images?.[0] || 'https://placehold.co/150x150?text=No+Image'}
                     alt={h.name}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                   />
