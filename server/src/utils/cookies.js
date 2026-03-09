@@ -1,10 +1,14 @@
 const { env } = require("../config/env");
 
 function accessCookieOptions() {
+  const isProd =
+    env.NODE_ENV === "production" ||
+    (env.CLIENT_ORIGIN && env.CLIENT_ORIGIN.startsWith("https"));
+
   return {
     httpOnly: true,
-    sameSite: env.NODE_ENV === "production" ? "none" : "lax",
-    secure: env.NODE_ENV === "production",
+    sameSite: isProd ? "none" : "lax",
+    secure: isProd,
     path: "/",
   };
 }
