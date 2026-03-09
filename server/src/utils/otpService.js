@@ -13,18 +13,7 @@ function generateOTP() {
  */
 async function sendOTPEmail(email, code) {
   if (!env.SMTP_USER || !env.SMTP_PASS) {
-    // eslint-disable-next-line no-console
-    console.warn("SMTP credentials not set. Mocking OTP to console.");
-    // eslint-disable-next-line no-console
-    console.log(`
-    -----------------------------------------
-    [EMAIL MOCKED] To: ${email}
-    Subject: Your Herbify Verification Code
-    Message: Your OTP is ${code}. 
-    It will expire in 10 minutes.
-    -----------------------------------------
-    `);
-    return true;
+    throw new Error("SMTP credentials are not configured on the server. Please add SMTP_USER, SMTP_PASS, SMTP_HOST, and SMTP_PORT in the Render dashboard.");
   }
 
   const transporter = nodemailer.createTransport({
