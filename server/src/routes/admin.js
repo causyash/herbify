@@ -239,6 +239,68 @@ router.get("/orders", async (req, res) => {
   res.json({ items });
 });
 
+router.get("/bestsellers", async (req, res) => {
+  try {
+    const { category } = req.query;
+    
+    // Aggregate all order items to find top sellers
+    const pipeline = [
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.itemId",
+          name: { $first: "$items.name" },
+          itemType: { $first: "$items.itemType" },
+          price: { $first: "$items.price" },
+          totalSold: { $sum: "$items.qty" }
+        }
+      },
+      { $sort: { totalSold: -1 } },
+      // Cap at top 50 to keep it manageable before filtering further
+      { $limit: 50 }
+    ];
+
+    const bestsellers = await Order.aggregate(pipeline);
+    
+    // We need to fetch current stock and category info
+    const productIds = bestsellers.filter(b => b.itemType === 'product').map(b => b._id);
+    const herbIds = bestsellers.filter(b => b.itemType === 'herb').map(b => b._id);
+
+    const [products, herbs] = await Promise.all([
+      Product.find({ _id: { $in: productIds } }).select("stock categoryId name images _id").lean(),
+      Herb.find({ _id: { $in: herbIds } }).select("stock name images _id").lean()
+    ]);
+    
+    // Build a map for quick lookup
+    const itemDataMap = {};
+    products.forEach(p => itemDataMap[p._id.toString()] = { stock: p.stock, categoryId: p.categoryId, images: p.images });
+    herbs.forEach(h => itemDataMap[h._id.toString()] = { stock: h.stock, categoryId: null, images: h.images }); // Herbs don't have categories in schema
+
+    // Merge and filter
+    let finalBestsellers = bestsellers.map(b => {
+      const data = itemDataMap[b._id.toString()] || { stock: 0, categoryId: null, images: [] };
+      return {
+        ...b,
+        stock: data.stock,
+        categoryId: data.categoryId,
+        image: data.images[0] || ''
+      };
+    });
+
+    // Optionally filter by category if provided. Herbs don't have categories so they drop out if a category is filtered.
+    if (category) {
+      finalBestsellers = finalBestsellers.filter(b => 
+        b.categoryId && b.categoryId.toString() === category
+      );
+    }
+    
+    res.json({ items: finalBestsellers.slice(0, 10) }); // Send top 10 after filter
+  } catch (err) {
+    console.error("Bestseller aggregation error", err);
+    res.status(500).json({ message: "Failed to fetch bestsellers" });
+  }
+});
+
 router.patch("/orders/:id/status", async (req, res) => {
   const parsed = z
     .object({ orderStatus: z.enum(["placed", "processing", "shipped", "delivered", "cancelled"]) })

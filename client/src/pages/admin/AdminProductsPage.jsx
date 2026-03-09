@@ -342,6 +342,7 @@ export function AdminProductsPage() {
                 <th className="py-2 pr-4">Name</th>
                 <th className="py-2 pr-4">Slug</th>
                 <th className="py-2 pr-4">Price</th>
+                <th className="py-2 pr-4">Stock</th>
                 <th className="py-2 pr-4">Category</th>
                 <th className="py-2 pr-0 text-right">Actions</th>
               </tr>
@@ -352,6 +353,11 @@ export function AdminProductsPage() {
                   <td className="py-3 pr-4 font-medium text-slate-900">{p.name}</td>
                   <td className="py-3 pr-4 text-slate-700">{p.slug}</td>
                   <td className="py-3 pr-4 text-slate-700">₹ {p.price}</td>
+                  <td className="py-3 pr-4 text-slate-700">
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${p.stock <= 5 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}`}>
+                      {p.stock}
+                    </span>
+                  </td>
                   <td className="py-3 pr-4 text-slate-700">
                     {p.categoryId?.name || '—'}
                   </td>
@@ -385,7 +391,7 @@ export function AdminProductsPage() {
               ))}
               {!loading && items.length === 0 ? (
                 <tr>
-                  <td className="py-3 text-slate-600" colSpan={5}>
+                  <td className="py-3 text-slate-600" colSpan={6}>
                     No products yet.
                   </td>
                 </tr>

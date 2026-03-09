@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, Legend } from 'recharts'
 
 export function AdminHomePage() {
   const [stats, setStats] = useState({
@@ -11,13 +10,17 @@ export function AdminHomePage() {
     users: 0,
     totalStockValue: 0
   })
-  const [chartData, setChartData] = useState([])
+  const [bestsellers, setBestsellers] = useState([])
+  const [categoriesList, setCategoriesList] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [loading, setLoading] = useState(true)
+  const [loadingBestsellers, setLoadingBestsellers] = useState(true)
 
   useEffect(() => {
     let active = true
     ;(async () => {
       try {
+        // Main stats load
         const [prodRes, herbRes, catRes, userRes] = await Promise.all([
           api.get('/api/admin/products'),
           api.get('/api/admin/herbs'),
@@ -27,26 +30,16 @@ export function AdminHomePage() {
         if (!active) return
 
         const products = prodRes.data.items || []
-        const hrbs = herbRes.data.items || []
+        const herbsList = herbRes.data.items || []
         const categories = catRes.data.items || []
         
-        const totalStockValue = products.reduce((acc, p) => acc + (p.price * (p.stock || 0)), 0)
+        const totalStockValue = products.reduce((acc, p) => acc + (p.price * (p.stock || 0)), 0) + 
+                                herbsList.reduce((acc, h) => acc + (h.price * (h.stock || 0)), 0)
 
-        // Generate data for graph showing stock of products per category
-        // To make it look vibrant and interactive, let's map stock levels for bestsellers
-        const activeItems = [...products, ...hrbs].slice(0, 10).map(item => ({
-          name: item.name.length > 20 ? item.name.slice(0, 20) + '...' : item.name,
-          stock: item.stock || 0,
-          price: item.price || 0,
-          // We can generate a simulated sales metric based on inverse stock for demo purposes to show "bestsellers"
-          simulatedSales: Math.floor(Math.random() * 500) + 100
-        }))
-
-        setChartData(activeItems)
-
+        setCategoriesList(categories)
         setStats({
           products: products.length,
-          herbs: hrbs.length,
+          herbs: herbsList.length,
           categories: categories.length,
           users: (userRes.data.items || []).length,
           totalStockValue
@@ -61,8 +54,29 @@ export function AdminHomePage() {
     return () => { active = false }
   }, [])
 
-  // Colors for chart bars
-  const colors = ['#059669', '#10b981', '#34d399', '#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6'];
+  // Bestsellers effect
+  useEffect(() => {
+    let active = true
+    ;(async () => {
+      try {
+        setLoadingBestsellers(true)
+        const url = selectedCategory 
+          ? `/api/admin/bestsellers?category=${selectedCategory}` 
+          : `/api/admin/bestsellers`
+        const res = await api.get(url)
+        if (!active) return
+        setBestsellers(res.data.items || [])
+      } catch (err) {
+        console.error("Failed to fetch bestsellers", err)
+      } finally {
+        if(active) setLoadingBestsellers(false)
+      }
+    })()
+    
+    return () => { active = false }
+  }, [selectedCategory])
+
+
 
   return (
     <div>
@@ -97,29 +111,51 @@ export function AdminHomePage() {
           </div>
 
           <div className="mt-12 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <h2 className="text-xl font-bold tracking-tight text-slate-900 mb-6 border-b border-slate-100 pb-4">
-              Stock vs Demand Activity <span className="text-sm font-normal text-slate-500 ml-2">(Live Inventory Tracking)</span>
-            </h2>
-            <div className="h-[400px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 12 }} angle={-45} textAnchor="end" />
-                  <YAxis yAxisId="left" orientation="left" stroke="#059669" tick={{ fill: '#059669' }} />
-                  <YAxis yAxisId="right" orientation="right" stroke="#6366f1" tick={{ fill: '#6366f1' }} />
-                  <Tooltip 
-                    cursor={{ fill: '#f8fafc' }}
-                    contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  />
-                  <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                  <Bar yAxisId="left" dataKey="stock" name="Current Stock Remaining" radius={[6, 6, 0, 0]}>
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.stock <= 5 ? '#ef4444' : colors[index % colors.length]} />
-                    ))}
-                  </Bar>
-                  <Bar yAxisId="right" dataKey="simulatedSales" name="Bestseller Demand Index" fill="#6366f1" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
+              <h2 className="text-xl font-bold tracking-tight text-slate-900">
+                Top Bestsellers <span className="text-sm font-normal text-slate-500 ml-2">(Live from existing orders)</span>
+              </h2>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="rounded-xl border border-slate-300 bg-slate-50 px-4 py-2 text-sm outline-none ring-emerald-500 focus:ring-2 max-w-xs"
+              >
+                <option value="">All Categories (includes Herbs)</option>
+                {categoriesList.map(c => (
+                  <option key={c._id} value={c._id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="overflow-x-auto">
+              {loadingBestsellers ? (
+                <p className="text-slate-500 text-sm py-4">Loading top selling items...</p>
+              ) : bestsellers.length === 0 ? (
+                <p className="text-slate-500 text-sm py-4 italic">No bestsellers found for the selected filter.</p>
+              ) : (
+                <div className="grid gap-4 mt-2">
+                  {bestsellers.map((item, idx) => (
+                    <div key={item._id} className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 hover:bg-slate-50 transition">
+                      <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-sm">
+                        #{idx + 1}
+                      </div>
+                      <div className="flex-shrink-0 w-12 h-12 bg-slate-200 rounded-xl overflow-hidden hidden sm:block">
+                        {item.image && <img src={item.image} alt={item.name} className="w-full h-full object-cover" />}
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <p className="text-sm font-bold text-slate-900 truncate">{item.name}</p>
+                        <p className="text-xs text-slate-500 capitalize">{item.itemType}</p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-sm font-black text-emerald-600">{item.totalSold} sold</p>
+                        <p className={`text-xs font-semibold ${item.stock <= 5 ? 'text-red-600' : 'text-slate-500'}`}>
+                          {item.stock} left
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </>

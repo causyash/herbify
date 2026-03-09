@@ -18,6 +18,7 @@ const { uploadsRouter } = require("./routes/uploads");
 const { ordersRouter } = require("./routes/orders");
 const { paymentsRouter } = require("./routes/payments");
 const { contactRouter } = require("./routes/contact");
+const { reviewsRouter } = require("./routes/reviews");
 
 function createApp({ dbConnected } = {}) {
   const app = express();
@@ -58,6 +59,7 @@ function createApp({ dbConnected } = {}) {
   app.use("/api/orders", ordersRouter);
   app.use("/api/payments", paymentsRouter);
   app.use("/api/contact", authLimiter, contactRouter);
+  app.use("/api/reviews", reviewsRouter);
 
   if (env.NODE_ENV === "production") {
     const distPath = path.join(__dirname, "../../client/dist");

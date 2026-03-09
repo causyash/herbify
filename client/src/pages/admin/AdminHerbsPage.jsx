@@ -326,6 +326,7 @@ export function AdminHerbsPage() {
                 <th className="py-2 pr-4">Name</th>
                 <th className="py-2 pr-4">Slug</th>
                 <th className="py-2 pr-4">Price</th>
+                <th className="py-2 pr-4">Stock</th>
                 <th className="py-2 pr-0 text-right">Actions</th>
               </tr>
             </thead>
@@ -335,6 +336,11 @@ export function AdminHerbsPage() {
                   <td className="py-3 pr-4 font-medium text-slate-900">{h.name}</td>
                   <td className="py-3 pr-4 text-slate-700">{h.slug}</td>
                   <td className="py-3 pr-4 text-slate-700">₹ {h.price}</td>
+                  <td className="py-3 pr-4 text-slate-700">
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${h.stock <= 5 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}`}>
+                      {h.stock}
+                    </span>
+                  </td>
                   <td className="py-3 pr-0">
                     <div className="flex justify-end gap-2">
                       <button
@@ -365,7 +371,7 @@ export function AdminHerbsPage() {
               ))}
               {!loading && items.length === 0 ? (
                 <tr>
-                  <td className="py-3 text-slate-600" colSpan={4}>
+                  <td className="py-3 text-slate-600" colSpan={5}>
                     No herbs yet.
                   </td>
                 </tr>

@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useCart } from '../cart/CartProvider.jsx'
 import { api } from '../lib/api'
 import { toast } from 'react-hot-toast'
+import { ReviewsSection } from '../components/ReviewsSection'
 
 export function HerbDetailsPage() {
   const { slug } = useParams()
@@ -155,6 +156,8 @@ export function HerbDetailsPage() {
                 )}
               </section>
             </div>
+            {/* Reviews Section Integration */}
+            <ReviewsSection itemType="herb" itemId={herb._id} />
           </div>
         </div>
         </div>
