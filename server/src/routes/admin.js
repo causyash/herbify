@@ -7,6 +7,7 @@ const { Herb } = require("../models/Herb");
 const { Product } = require("../models/Product");
 const { ContactMessage } = require("../models/ContactMessage");
 const { Order } = require("../models/Order");
+const { User } = require("../models/User");
 
 const router = express.Router();
 router.use(requireAuth, requireAdmin);
@@ -251,6 +252,38 @@ router.patch("/orders/:id/status", async (req, res) => {
   );
   if (!doc) return res.status(404).json({ message: "Not found" });
   res.json({ item: doc });
+});
+
+// Users
+router.get("/users", async (req, res) => {
+  const items = await User.find({}).select("-passwordHash").sort({ createdAt: -1 }).lean();
+  res.json({ items });
+});
+
+router.patch("/users/:id/role", async (req, res) => {
+  const parsed = z
+    .object({ role: z.enum(["user", "admin"]) })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  const doc = await User.findByIdAndUpdate(
+    req.params.id,
+    { $set: { role: parsed.data.role } },
+    { new: true }
+  ).select("-passwordHash");
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ item: doc });
+});
+
+router.delete("/users/:id", async (req, res) => {
+  // Prevent admin from deleting themselves? Let's just allow it or rely on client side to hide the button.
+  if (req.params.id === String(req.user._id)) {
+    return res.status(400).json({ message: "Cannot delete yourself" });
+  }
+
+  const doc = await User.findByIdAndDelete(req.params.id);
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ ok: true });
 });
 
 module.exports = { adminRouter: router };

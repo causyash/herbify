@@ -178,6 +178,9 @@ export function AdminLayout() {
             <NavLink to="/admin/contacts" className={linkClass}>
               Contacts
             </NavLink>
+            <NavLink to="/admin/users" className={linkClass}>
+              Users
+            </NavLink>
             <NavLink to="/admin/orders" className={linkClass}>
               Orders
             </NavLink>

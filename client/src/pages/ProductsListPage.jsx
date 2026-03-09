@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../cart/CartProvider.jsx'
 import { api } from '../lib/api'
+import { toast } from 'react-hot-toast'
 
 function flattenCategories(nodes, prefix = '') {
   const out = []
@@ -132,7 +133,7 @@ export function ProductsListPage() {
               <div className="mt-4 flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() =>
+                  onClick={() => {
                     addItem({
                       itemType: 'product',
                       itemId: p._id,
@@ -142,7 +143,8 @@ export function ProductsListPage() {
                       image: p.images?.[0] || '',
                       qty: 1,
                     })
-                  }
+                    toast.success('Added to cart')
+                  }}
                   className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
                 >
                   Add to cart

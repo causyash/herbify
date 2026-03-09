@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useCart } from '../cart/CartProvider.jsx'
 import { api } from '../lib/api'
+import { toast } from 'react-hot-toast'
 
 export function HerbDetailsPage() {
   const { slug } = useParams()
@@ -98,7 +99,7 @@ export function HerbDetailsPage() {
               </span>
               <button
                 type="button"
-                onClick={() =>
+                onClick={() => {
                   addItem({
                     itemType: 'herb',
                     itemId: herb._id,
@@ -108,7 +109,8 @@ export function HerbDetailsPage() {
                     image: herb.images?.[0] || '',
                     qty: 1,
                   })
-                }
+                  toast.success('Added to cart')
+                }}
                 className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
               >
                 Add to cart

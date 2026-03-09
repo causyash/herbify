@@ -21,46 +21,56 @@ import { AdminHerbsPage } from './pages/admin/AdminHerbsPage.jsx'
 import { AdminHomePage } from './pages/admin/AdminHomePage.jsx'
 import { AdminProductsPage } from './pages/admin/AdminProductsPage.jsx'
 import { AdminOrdersPage } from './pages/admin/AdminOrdersPage.jsx'
+import { AdminUsersPage } from './pages/admin/AdminUsersPage.jsx'
+import { ProfilePage } from './pages/ProfilePage.jsx'
+
+import { Toaster } from 'react-hot-toast'
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<SiteLayout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
+    <>
+      <Toaster position="bottom-right" />
+      <Routes>
+        <Route element={<SiteLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
 
-        <Route path="/herbs" element={<HerbsListPage />} />
-        <Route path="/herbs/:slug" element={<HerbDetailsPage />} />
+          <Route path="/herbs" element={<HerbsListPage />} />
+          <Route path="/herbs/:slug" element={<HerbDetailsPage />} />
 
-        <Route path="/products" element={<ProductsListPage />} />
-        <Route path="/products/:slug" element={<ProductDetailsPage />} />
+          <Route path="/products" element={<ProductsListPage />} />
+          <Route path="/products/:slug" element={<ProductDetailsPage />} />
 
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/account/orders" element={<OrdersPage />} />
-        <Route path="/account/orders/:id" element={<OrderDetailsPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/account/profile" element={<ProfilePage />} />
+          <Route path="/account/orders" element={<OrdersPage />} />
+          <Route path="/account/orders/:id" element={<OrderDetailsPage />} />
 
-        <Route
-          path="/admin"
-          element={
-            <RequireAdmin>
-              <AdminLayout />
-            </RequireAdmin>
-          }
-        >
-          <Route index element={<AdminHomePage />} />
-          <Route path="categories" element={<AdminCategoriesPage />} />
-          <Route path="herbs" element={<AdminHerbsPage />} />
-          <Route path="products" element={<AdminProductsPage />} />
-          <Route path="contacts" element={<AdminContactsPage />} />
-          <Route path="orders" element={<AdminOrdersPage />} />
+          <Route
+            path="/admin"
+            element={
+              <RequireAdmin>
+                <AdminLayout />
+              </RequireAdmin>
+            }
+          >
+            <Route index element={<AdminHomePage />} />
+            <Route path="categories" element={<AdminCategoriesPage />} />
+            <Route path="herbs" element={<AdminHerbsPage />} />
+            <Route path="products" element={<AdminProductsPage />} />
+            <Route path="contacts" element={<AdminContactsPage />} />
+            <Route path="users" element={<AdminUsersPage />} />
+            <Route path="orders" element={<AdminOrdersPage />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
-
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   )
 }
+
