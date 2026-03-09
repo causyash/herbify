@@ -73,7 +73,7 @@ router.post("/register", async (req, res) => {
     return res.status(201).json({ message: "OTP sent for verification" });
   } catch (err) {
     console.error("Failed to send OTP", err);
-    return res.status(500).json({ message: "Failed to send verification email. Please try again." });
+    return res.status(500).json({ message: err.message || "Failed to send verification email. Please try again." });
   }
 });
 
@@ -133,7 +133,7 @@ router.post("/resend-otp", async (req, res) => {
     await sendOTPEmail(email, code);
   } catch (err) {
     console.error("Failed to resend OTP", err);
-    return res.status(500).json({ message: "Failed to send verification email. Please try again." });
+    return res.status(500).json({ message: err.message || "Failed to send verification email. Please try again." });
   }
 
   res.json({ message: "OTP resent successfully" });
@@ -166,7 +166,7 @@ router.post("/login", async (req, res) => {
       return res.status(200).json({ requiresVerification: true, message: "Please verify your email. OTP sent." });
     } catch (err) {
       console.error("Failed to send OTP", err);
-      return res.status(500).json({ message: "Failed to send verification email." });
+      return res.status(500).json({ message: err.message || "Failed to send verification email." });
     }
   }
 

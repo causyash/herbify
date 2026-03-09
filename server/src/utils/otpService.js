@@ -50,7 +50,7 @@ async function sendOTPEmail(email, code) {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Failed to send email:", error);
-    throw new Error("Could not send verification email");
+    throw new Error(error.message || "Could not send verification email");
   }
 }
 
