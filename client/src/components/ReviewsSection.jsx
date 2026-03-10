@@ -23,7 +23,7 @@ export function ReviewsSection({ itemType, itemId }) {
         if (!active) return
         setReviews(res.data.reviews || [])
         setStats(res.data.stats || { totalReviews: 0, averageRating: 0 })
-      } catch (err) {
+      } catch {
         if (!active) return
         setError('Failed to load reviews')
       } finally {

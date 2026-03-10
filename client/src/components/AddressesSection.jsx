@@ -28,7 +28,7 @@ export function AddressesSection() {
     try {
       const res = await api.get('/api/auth/me')
       setAddresses(res.data.user?.addresses || [])
-    } catch (err) {
+    } catch {
       toast.error('Failed to load addresses')
     } finally {
       setLoading(false)

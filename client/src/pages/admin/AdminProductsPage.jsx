@@ -73,7 +73,7 @@ export function AdminProductsPage() {
       active = false
       socket.disconnect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   async function onUpload(files) {
