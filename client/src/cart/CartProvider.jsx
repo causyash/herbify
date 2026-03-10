@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthProvider.jsx'
 import { api } from '../lib/api'
