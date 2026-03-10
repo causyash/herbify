@@ -3,6 +3,8 @@ const { z } = require("zod");
 
 const { requireAuth } = require("../middleware/auth");
 const { Order } = require("../models/Order");
+const { Herb } = require("../models/Herb");
+const { Product } = require("../models/Product");
 
 const router = express.Router();
 
@@ -22,6 +24,13 @@ router.post("/", requireAuth, async (req, res) => {
 
   const cart = req.user.cartItems || [];
   if (!cart.length) return res.status(400).json({ message: "Cart is empty" });
+
+  for (const it of cart) {
+    const Model = it.itemType === "herb" ? Herb : Product;
+    const doc = await Model.findById(it.itemId);
+    if (!doc) return res.status(400).json({ message: `Item ${it.name} not found` });
+    if (doc.stock < it.qty) return res.status(400).json({ message: `Not enough stock for ${it.name}. Only ${doc.stock} left.` });
+  }
 
   const subtotal = cart.reduce((sum, it) => sum + it.price * it.qty, 0);
   const shippingFee = 0;

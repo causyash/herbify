@@ -114,6 +114,7 @@ export function ProductDetailsPage() {
               </span>
               <button
                 type="button"
+                disabled={product.stock <= 0}
                 onClick={() => {
                   addItem({
                     itemType: 'product',
@@ -126,9 +127,13 @@ export function ProductDetailsPage() {
                   })
                   toast.success('Added to cart')
                 }}
-                className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
+                className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-white ${
+                  product.stock > 0
+                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    : 'bg-slate-400 cursor-not-allowed'
+                }`}
               >
-                Add to cart
+                {product.stock > 0 ? 'Add to cart' : 'Out of Stock'}
               </button>
             </div>
 

@@ -96,12 +96,19 @@ export function HerbDetailsPage() {
               {herb.name}
             </h1>
 
+            {herb.stock <= 5 && herb.stock > 0 && (
+              <p className="mt-3 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 animate-pulse border border-amber-200">
+                Hurry! Only {herb.stock} left in stock.
+              </p>
+            )}
+
             <div className="mt-5 flex items-center gap-3">
               <span className="text-2xl font-semibold text-slate-900">
                 ₹ {herb.price}
               </span>
               <button
                 type="button"
+                disabled={herb.stock <= 0}
                 onClick={() => {
                   addItem({
                     itemType: 'herb',
@@ -114,9 +121,13 @@ export function HerbDetailsPage() {
                   })
                   toast.success('Added to cart')
                 }}
-                className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
+                className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-white ${
+                  herb.stock > 0
+                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    : 'bg-slate-400 cursor-not-allowed'
+                }`}
               >
-                Add to cart
+                {herb.stock > 0 ? 'Add to cart' : 'Out of Stock'}
               </button>
             </div>
 

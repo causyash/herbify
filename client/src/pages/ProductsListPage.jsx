@@ -147,6 +147,7 @@ export function ProductsListPage() {
                     <p className="text-xl font-bold text-emerald-600">₹ {p.price}</p>
                     <button
                       type="button"
+                      disabled={p.stock <= 0}
                       onClick={() => {
                         addItem({
                           itemType: 'product',
@@ -159,9 +160,13 @@ export function ProductsListPage() {
                         })
                         toast.success('Added to cart')
                       }}
-                      className="rounded-full bg-slate-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-600 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      className={`rounded-full px-4 py-2 text-sm font-bold text-white transition focus:outline-none ${
+                        p.stock > 0 
+                          ? 'bg-slate-900 hover:bg-emerald-600 focus:ring-2 focus:ring-emerald-500' 
+                          : 'bg-slate-400 cursor-not-allowed'
+                      }`}
                     >
-                      Add +
+                      {p.stock > 0 ? 'Add +' : 'Out'}
                     </button>
                  </div>
               </div>

@@ -104,12 +104,13 @@ router.post("/razorpay/verify", requireAuth, async (req, res) => {
     });
   }
 
-  // Send SMS Alert to Admin (Don't await so it doesn't block stock update if it's slow)
-  sendAdminSMS(
-    `Herbify: New order received! Order #${String(order._id).slice(-6).toUpperCase()} by ${req.user.name} for Rs.${order.total}. Check Admin Console.`
-  ).catch(err => console.error("SMS background error:", err));
+  // Inventory Management & Notification
+  let orderDetailsHtml = `🛍️ <b>New Order Placed!</b>\n\n`;
+  orderDetailsHtml += `<b>Order ID:</b> #${String(order._id).slice(-6).toUpperCase()}\n`;
+  orderDetailsHtml += `<b>Customer:</b> ${req.user.name}\n`;
+  orderDetailsHtml += `<b>Total:</b> Rs.${order.total}\n\n`;
+  orderDetailsHtml += `<b>Items Ordered & New Stock:</b>\n`;
 
-  // Inventory Management: Update stocks
   try {
     const stockUpdates = order.items.map(async (item) => {
       const Model = item.itemType === "herb" ? Herb : Product;
@@ -128,6 +129,9 @@ router.post("/razorpay/verify", requireAuth, async (req, res) => {
         });
       }
 
+      const remainingStockStr = updatedItem ? updatedItem.stock : 'Unknown';
+      orderDetailsHtml += `- ${item.name} (Qty: ${item.qty}) -> Stock left: <b>${remainingStockStr}</b>\n`;
+
       // Check for low stock and notify Admin via Telegram
       if (updatedItem && updatedItem.stock <= 5) {
         sendAdminSMS(
@@ -138,10 +142,17 @@ router.post("/razorpay/verify", requireAuth, async (req, res) => {
       return updatedItem;
     });
     await Promise.all(stockUpdates);
+
+    // Send the comprehensive SMS Alert to Admin
+    sendAdminSMS(orderDetailsHtml).catch(err => console.error("SMS background error:", err));
+
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error("Failed to update inventory for order:", order._id, err);
-    // Note: In production, you might want to handle this more robustly (e.g., background job)
+    // Send fallback SMS
+    sendAdminSMS(
+      `Herbify: New order received! Order #${String(order._id).slice(-6).toUpperCase()} by ${req.user.name} for Rs.${order.total}. Check Admin Console.`
+    ).catch(err2 => console.error("SMS background error:", err2));
   }
 
   await User.findByIdAndUpdate(req.user._id, { $set: { cartItems: [] } });
