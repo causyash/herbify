@@ -31,9 +31,6 @@ async function sendOTPEmail(email, code) {
       user: env.SMTP_USER,
       pass: env.SMTP_PASS,
     },
-    connectionTimeout: 5000, // 5 seconds to bypass Render's silent firewall drop quickly
-    greetingTimeout: 5000,
-    socketTimeout: 5000,
   });
 
   const mailOptions = {
@@ -54,26 +51,8 @@ async function sendOTPEmail(email, code) {
     `,
   };
 
-  try {
-    await transporter.sendMail(mailOptions);
-    return true;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("SMTP delivery failed (Likely Render Free Tier Firewall Blocking Port 465/587). Falling back to Console Mock.");
-    
-    // eslint-disable-next-line no-console
-    console.log(`
-    -----------------------------------------
-    [EMAIL BYPASS MOCKED] To: ${email}
-    Subject: Your Herbify Verification Code
-    Message: Your OTP is ${code}. 
-    It will expire in 10 minutes.
-    -----------------------------------------
-    `);
-    
-    // Return true anyway so the user's login flow continues uninterrupted!
-    return true;
-  }
+  await transporter.sendMail(mailOptions);
+  return true;
 }
 
 module.exports = { generateOTP, sendOTPEmail };
