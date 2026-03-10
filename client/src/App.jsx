@@ -27,10 +27,12 @@ import { AdminUsersPage } from './pages/admin/AdminUsersPage.jsx'
 import { ProfilePage } from './pages/ProfilePage.jsx'
 
 import { Toaster } from 'react-hot-toast'
+import { TitleUpdater } from './components/TitleUpdater.jsx'
 
 export default function App() {
   return (
     <>
+      <TitleUpdater />
       <Toaster position="bottom-right" />
       <Routes>
         <Route element={<SiteLayout />}>

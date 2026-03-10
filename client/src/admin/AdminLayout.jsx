@@ -3,7 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { io } from 'socket.io-client'
 
 const linkClass = ({ isActive }) =>
-  `block rounded-xl px-3 py-2 text-sm font-semibold transition ${
+  `block rounded-xl px-3 py-2 text-sm font-semibold transition whitespace-nowrap shrink-0 ${
     isActive ? 'bg-emerald-600 text-white' : 'text-slate-700 hover:bg-slate-100'
   }`
 
@@ -34,7 +34,7 @@ export function AdminLayout() {
       ].slice(0, 10))
       
       // Browser notification
-      if (Notification.permission === 'granted') {
+      if ("Notification" in window && Notification.permission === 'granted') {
         new Notification('New Order Recieved!', {
           body: `${order.customer} just placed an order for ₹${order.total}`,
         })
@@ -42,7 +42,7 @@ export function AdminLayout() {
     })
 
     // Request notification permission
-    if (Notification.permission === 'default') {
+    if ("Notification" in window && Notification.permission === 'default') {
       Notification.requestPermission()
     }
 
@@ -159,15 +159,15 @@ export function AdminLayout() {
 
       <div className="grid gap-6 lg:grid-cols-4">
         <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-1 h-fit">
-          <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500 hidden lg:block">
             Navigation
           </p>
-          <nav className="grid gap-1">
+          <nav className="flex flex-row overflow-x-auto lg:flex-col gap-1 pb-2 lg:pb-0 hide-scrollbar">
             <NavLink to="/admin" end className={linkClass}>
               Overview
             </NavLink>
             <NavLink to="/admin/inventory" className={linkClass}>
-              Master Inventory
+              Inventory
             </NavLink>
             <NavLink to="/admin/categories" className={linkClass}>
               Categories
@@ -190,7 +190,7 @@ export function AdminLayout() {
           </nav>
         </aside>
 
-        <section className="lg:col-span-3">
+        <section className="lg:col-span-3 min-w-0">
           <Outlet />
         </section>
       </div>
