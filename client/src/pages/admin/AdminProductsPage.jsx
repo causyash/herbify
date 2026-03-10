@@ -44,21 +44,22 @@ export function AdminProductsPage() {
 
   useEffect(() => {
     let active = true
-    ;(async () => {
-      try {
-        setError('')
-        setLoading(true)
-        await load()
-      } catch (err) {
-        if (!active) return
-        setError(err?.response?.data?.message || 'Failed to load products')
-      } finally {
-        if (active) setLoading(false)
-      }
-    })()
+      ; (async () => {
+        try {
+          setError('')
+          setLoading(true)
+          await load()
+        } catch (err) {
+          if (!active) return
+          setError(err?.response?.data?.message || 'Failed to load products')
+        } finally {
+          if (active) setLoading(false)
+        }
+      })()
 
     // Socket for live stock updates
-    const socket = io('http://localhost:5000', { withCredentials: true })
+    const socketUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    const socket = io(socketUrl, { withCredentials: true })
     socket.on('stock-update', (data) => {
       if (data.itemType === 'product') {
         setItems((prev) =>
@@ -73,7 +74,7 @@ export function AdminProductsPage() {
       active = false
       socket.disconnect()
     }
-     
+
   }, [])
 
   async function onUpload(files) {

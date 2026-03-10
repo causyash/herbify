@@ -35,21 +35,22 @@ export function AdminHerbsPage() {
 
   useEffect(() => {
     let active = true
-    ;(async () => {
-      try {
-        setError('')
-        setLoading(true)
-        await load()
-      } catch (err) {
-        if (!active) return
-        setError(err?.response?.data?.message || 'Failed to load herbs')
-      } finally {
-        if (active) setLoading(false)
-      }
-    })()
+      ; (async () => {
+        try {
+          setError('')
+          setLoading(true)
+          await load()
+        } catch (err) {
+          if (!active) return
+          setError(err?.response?.data?.message || 'Failed to load herbs')
+        } finally {
+          if (active) setLoading(false)
+        }
+      })()
 
     // Socket for live stock updates
-    const socket = io('http://localhost:5000', { withCredentials: true })
+    const socketUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    const socket = io(socketUrl, { withCredentials: true })
     socket.on('stock-update', (data) => {
       if (data.itemType === 'herb') {
         setItems((prev) =>
@@ -64,7 +65,7 @@ export function AdminHerbsPage() {
       active = false
       socket.disconnect()
     }
-     
+
   }, [])
 
   async function onUpload(files) {
