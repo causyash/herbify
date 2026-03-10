@@ -141,6 +141,14 @@ router.delete("/herbs/:id", async (req, res) => {
   res.json({ ok: true });
 });
 
+router.patch("/herbs/:id/stock", async (req, res) => {
+  const parsed = z.object({ stock: z.number().int().min(0) }).safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+  const doc = await Herb.findByIdAndUpdate(req.params.id, { $set: { stock: parsed.data.stock } }, { new: true });
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ item: doc });
+});
+
 // Products
 router.get("/products", async (req, res) => {
   const items = await Product.find({})
@@ -209,6 +217,14 @@ router.delete("/products/:id", async (req, res) => {
   res.json({ ok: true });
 });
 
+router.patch("/products/:id/stock", async (req, res) => {
+  const parsed = z.object({ stock: z.number().int().min(0) }).safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+  const doc = await Product.findByIdAndUpdate(req.params.id, { $set: { stock: parsed.data.stock } }, { new: true });
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json({ item: doc });
+});
+
 // Contacts
 router.get("/contacts", async (req, res) => {
   const items = await ContactMessage.find({}).sort({ createdAt: -1 }).lean();
@@ -242,7 +258,7 @@ router.get("/orders", async (req, res) => {
 router.get("/bestsellers", async (req, res) => {
   try {
     const { category } = req.query;
-    
+
     // Aggregate all order items to find top sellers
     const pipeline = [
       { $unwind: "$items" },
@@ -261,7 +277,7 @@ router.get("/bestsellers", async (req, res) => {
     ];
 
     const bestsellers = await Order.aggregate(pipeline);
-    
+
     // We need to fetch current stock and category info
     const productIds = bestsellers.filter(b => b.itemType === 'product').map(b => b._id);
     const herbIds = bestsellers.filter(b => b.itemType === 'herb').map(b => b._id);
@@ -270,7 +286,7 @@ router.get("/bestsellers", async (req, res) => {
       Product.find({ _id: { $in: productIds } }).select("stock categoryId name images _id").lean(),
       Herb.find({ _id: { $in: herbIds } }).select("stock name images _id").lean()
     ]);
-    
+
     // Build a map for quick lookup
     const itemDataMap = {};
     products.forEach(p => itemDataMap[p._id.toString()] = { stock: p.stock, categoryId: p.categoryId, images: p.images });
@@ -289,11 +305,11 @@ router.get("/bestsellers", async (req, res) => {
 
     // Optionally filter by category if provided. Herbs don't have categories so they drop out if a category is filtered.
     if (category) {
-      finalBestsellers = finalBestsellers.filter(b => 
+      finalBestsellers = finalBestsellers.filter(b =>
         b.categoryId && b.categoryId.toString() === category
       );
     }
-    
+
     res.json({ items: finalBestsellers.slice(0, 10) }); // Send top 10 after filter
   } catch (err) {
     console.error("Bestseller aggregation error", err);
