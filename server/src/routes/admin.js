@@ -8,6 +8,7 @@ const { Product } = require("../models/Product");
 const { ContactMessage } = require("../models/ContactMessage");
 const { Order } = require("../models/Order");
 const { User } = require("../models/User");
+const { sendAdminSMS } = require("../utils/smsService");
 
 const router = express.Router();
 router.use(requireAuth, requireAdmin);
@@ -127,8 +128,17 @@ router.put("/herbs/:id", async (req, res) => {
   if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
 
   try {
+    const docBefore = await Herb.findById(req.params.id);
+    if (!docBefore) return res.status(404).json({ message: "Not found" });
+
+    // Inform admin about stock change via Telegram
+    if (parsed.data.stock !== undefined && docBefore.stock !== parsed.data.stock) {
+      sendAdminSMS(
+        `🌿 <b>Stock Modified (Herb Edit)</b>\n\nName: <b>${docBefore.name}</b>\nAdmin: <b>${req.user.name}</b>\n\n📉 Old Stock: <b>${docBefore.stock}</b>\n📈 New Stock: <b>${parsed.data.stock}</b>`
+      );
+    }
+
     const doc = await Herb.findByIdAndUpdate(req.params.id, { $set: parsed.data }, { new: true });
-    if (!doc) return res.status(404).json({ message: "Not found" });
     res.json({ item: doc });
   } catch (err) {
     return dupKey(res, err);
@@ -144,8 +154,17 @@ router.delete("/herbs/:id", async (req, res) => {
 router.patch("/herbs/:id/stock", async (req, res) => {
   const parsed = z.object({ stock: z.number().int().min(0) }).safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  const docBefore = await Herb.findById(req.params.id);
+  if (!docBefore) return res.status(404).json({ message: "Not found" });
+
+  if (docBefore.stock !== parsed.data.stock) {
+    sendAdminSMS(
+      `🌿 <b>Live Stock Update (Herb)</b>\n\nName: <b>${docBefore.name}</b>\nAdmin: <b>${req.user.name}</b>\n\n📉 Old Stock: <b>${docBefore.stock}</b>\n📈 New Stock: <b>${parsed.data.stock}</b>`
+    );
+  }
+
   const doc = await Herb.findByIdAndUpdate(req.params.id, { $set: { stock: parsed.data.stock } }, { new: true });
-  if (!doc) return res.status(404).json({ message: "Not found" });
   res.json({ item: doc });
 });
 
@@ -199,12 +218,21 @@ router.put("/products/:id", async (req, res) => {
   if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
 
   try {
+    const docBefore = await Product.findById(req.params.id);
+    if (!docBefore) return res.status(404).json({ message: "Not found" });
+
+    // Inform admin about stock change via Telegram
+    if (parsed.data.stock !== undefined && docBefore.stock !== parsed.data.stock) {
+      sendAdminSMS(
+        `📦 <b>Stock Modified (Product Edit)</b>\n\nName: <b>${docBefore.name}</b>\nAdmin: <b>${req.user.name}</b>\n\n📉 Old Stock: <b>${docBefore.stock}</b>\n📈 New Stock: <b>${parsed.data.stock}</b>`
+      );
+    }
+
     const doc = await Product.findByIdAndUpdate(
       req.params.id,
       { $set: parsed.data },
       { new: true }
     );
-    if (!doc) return res.status(404).json({ message: "Not found" });
     res.json({ item: doc });
   } catch (err) {
     return dupKey(res, err);
@@ -220,8 +248,17 @@ router.delete("/products/:id", async (req, res) => {
 router.patch("/products/:id/stock", async (req, res) => {
   const parsed = z.object({ stock: z.number().int().min(0) }).safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ message: "Invalid input" });
+
+  const docBefore = await Product.findById(req.params.id);
+  if (!docBefore) return res.status(404).json({ message: "Not found" });
+
+  if (docBefore.stock !== parsed.data.stock) {
+    sendAdminSMS(
+      `📦 <b>Live Stock Update (Product)</b>\n\nName: <b>${docBefore.name}</b>\nAdmin: <b>${req.user.name}</b>\n\n📉 Old Stock: <b>${docBefore.stock}</b>\n📈 New Stock: <b>${parsed.data.stock}</b>`
+    );
+  }
+
   const doc = await Product.findByIdAndUpdate(req.params.id, { $set: { stock: parsed.data.stock } }, { new: true });
-  if (!doc) return res.status(404).json({ message: "Not found" });
   res.json({ item: doc });
 });
 
