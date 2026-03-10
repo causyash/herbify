@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider.jsx'
 import { useCart } from '../cart/CartProvider.jsx'
@@ -19,6 +19,25 @@ export function CheckoutPage() {
   const [pincode, setPincode] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [savedAddresses, setSavedAddresses] = useState([])
+
+  useEffect(() => {
+    if (user) {
+      api.get('/api/auth/me').then(res => {
+        setSavedAddresses(res.data.user?.addresses || [])
+      }).catch(console.error)
+    }
+  }, [user])
+
+  function selectAddress(addr) {
+    setFullName(addr.fullName || '')
+    setPhone(addr.phone || '')
+    setAddressLine1(addr.addressLine1 || '')
+    setAddressLine2(addr.addressLine2 || '')
+    setCity(addr.city || '')
+    setState(addr.state || '')
+    setPincode(addr.pincode || '')
+  }
 
   if (!loading && !user) return <Navigate to="/login" replace />
 
@@ -116,7 +135,33 @@ export function CheckoutPage() {
             }}
             className="lg:col-span-2 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
           >
-            <p className="text-lg font-semibold text-slate-900">Shipping address</p>
+            <div className="flex items-center justify-between">
+              <p className="text-lg font-semibold text-slate-900">Shipping address</p>
+              <Link to="/account" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">Manage Addresses</Link>
+            </div>
+
+            {savedAddresses.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm font-medium text-slate-600 mb-2">Select a saved address:</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {savedAddresses.map((addr, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => selectAddress(addr)}
+                      className="text-left p-4 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+                    >
+                      <span className="inline-block px-2 py-1 mb-2 text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 rounded-md">
+                        {addr.label}
+                      </span>
+                      <p className="font-semibold text-slate-900 text-sm">{addr.fullName}</p>
+                      <p className="text-slate-600 text-xs mt-1 truncate">{addr.addressLine1}</p>
+                      <p className="text-slate-600 text-xs truncate">{addr.city}, {addr.state} {addr.pincode}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="grid gap-1">

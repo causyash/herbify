@@ -21,6 +21,21 @@ const userSchema = new mongoose.Schema(
       ],
       default: [],
     },
+    addresses: {
+      type: [
+        {
+          label: { type: String, trim: true, default: "Home" }, // Work, Home, etc.
+          fullName: { type: String, required: true, trim: true, maxlength: 160 },
+          phone: { type: String, required: true, trim: true, maxlength: 30 },
+          addressLine1: { type: String, required: true, trim: true, maxlength: 240 },
+          addressLine2: { type: String, trim: true, default: "", maxlength: 240 },
+          city: { type: String, required: true, trim: true, maxlength: 80 },
+          state: { type: String, required: true, trim: true, maxlength: 80 },
+          pincode: { type: String, required: true, trim: true, maxlength: 12 },
+        }
+      ],
+      default: []
+    },
   },
   { timestamps: true }
 );

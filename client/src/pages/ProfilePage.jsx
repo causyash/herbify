@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider.jsx'
 import { api } from '../lib/api'
 
+import { AddressesSection } from '../components/AddressesSection'
+
 export function ProfilePage() {
   const { user } = useAuth()
   const [orders, setOrders] = useState([])
@@ -54,6 +56,8 @@ export function ProfilePage() {
           </div>
         </div>
       </div>
+
+      <AddressesSection />
 
       <div className="mt-8">
         <div className="flex items-end justify-between">

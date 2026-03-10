@@ -53,24 +53,12 @@ async function main() {
     { upsert: true, new: true }
   );
 
+  // Clear old categories to remove the sub-categories
+  await Category.deleteMany({});
+
   const herbalTea = await upsertCategory({ name: "Herbal Tea", slug: "herbal-tea" });
   const oils = await upsertCategory({ name: "Oils", slug: "oils" });
-
-  const tulsiTeaCat = await upsertCategory({
-    name: "Tulsi Tea",
-    slug: "tulsi-tea",
-    parentId: herbalTea._id,
-  });
-  const gingerTeaCat = await upsertCategory({
-    name: "Ginger Tea",
-    slug: "ginger-tea",
-    parentId: herbalTea._id,
-  });
-  const neemOilCat = await upsertCategory({
-    name: "Neem Oil",
-    slug: "neem-oil",
-    parentId: oils._id,
-  });
+  const supplements = await upsertCategory({ name: "Supplements", slug: "supplements" });
 
   await upsertHerb({
     name: "Tulsi",
@@ -119,7 +107,7 @@ async function main() {
     price: 249,
     stock: 40,
     images: [],
-    categoryId: tulsiTeaCat._id,
+    categoryId: herbalTea._id,
     tags: ["tea", "tulsi"],
   });
 
@@ -131,7 +119,7 @@ async function main() {
     price: 219,
     stock: 55,
     images: [],
-    categoryId: gingerTeaCat._id,
+    categoryId: herbalTea._id,
     tags: ["tea", "ginger"],
   });
 
@@ -143,7 +131,7 @@ async function main() {
     price: 299,
     stock: 25,
     images: [],
-    categoryId: neemOilCat._id,
+    categoryId: oils._id,
     tags: ["oil", "neem"],
   });
 

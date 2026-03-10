@@ -19,6 +19,7 @@ const { ordersRouter } = require("./routes/orders");
 const { paymentsRouter } = require("./routes/payments");
 const { contactRouter } = require("./routes/contact");
 const { reviewsRouter } = require("./routes/reviews");
+const { usersRouter } = require("./routes/users");
 
 function createApp({ dbConnected } = {}) {
   const app = express();
@@ -50,6 +51,7 @@ function createApp({ dbConnected } = {}) {
   });
 
   app.use("/api/auth", authLimiter, authRouter);
+  app.use("/api/users", usersRouter);
   app.use("/api/categories", categoriesRouter);
   app.use("/api/herbs", herbsRouter);
   app.use("/api/products", productsRouter);
