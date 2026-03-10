@@ -13,7 +13,8 @@ export function AdminLayout() {
 
   useEffect(() => {
     // Connect to socket
-    const socket = io('http://localhost:5000', {
+    const socketUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    const socket = io(socketUrl, {
       withCredentials: true,
     })
 

@@ -28,7 +28,8 @@ export function AdminOrdersPage() {
     })()
 
     // Socket for live order updates
-    const socket = io('http://localhost:5000', { withCredentials: true })
+    const socketUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    const socket = io(socketUrl, { withCredentials: true })
     socket.on('new-order', () => {
       load().catch(() => {})
     })
