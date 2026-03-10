@@ -14,25 +14,25 @@ export function AdminInventoryPage() {
 
   useEffect(() => {
     let active = true
-    ;(async () => {
-      try {
-        const [prodRes, herbRes, catRes] = await Promise.all([
-          api.get('/api/admin/products'),
-          api.get('/api/admin/herbs'),
-          api.get('/api/admin/categories')
-        ])
-        if (!active) return
+      ; (async () => {
+        try {
+          const [prodRes, herbRes, catRes] = await Promise.all([
+            api.get('/api/admin/products'),
+            api.get('/api/admin/herbs'),
+            api.get('/api/admin/categories')
+          ])
+          if (!active) return
 
-        setProducts(prodRes.data.items || [])
-        setHerbs(herbRes.data.items || [])
-        setCategories(catRes.data.items || [])
-      } catch (err) {
-        console.error("Failed to fetch inventory", err)
-      } finally {
-        if(active) setLoading(false)
-      }
-    })()
-    
+          setProducts(prodRes.data.items || [])
+          setHerbs(herbRes.data.items || [])
+          setCategories(catRes.data.items || [])
+        } catch (err) {
+          console.error("Failed to fetch inventory", err)
+        } finally {
+          if (active) setLoading(false)
+        }
+      })()
+
     return () => { active = false }
   }, [])
 
@@ -45,16 +45,16 @@ export function AdminInventoryPage() {
   // Filter logic
   const filteredInventory = combinedInventory.filter(item => {
     // 1. Search text filter
-    const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase()) || 
-                          (item.slug && item.slug.toLowerCase().includes(search.toLowerCase()))
-    
+    const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase()) ||
+      (item.slug && item.slug.toLowerCase().includes(search.toLowerCase()))
+
     // 2. Type filter
     const matchesType = typeFilter === 'all' || item.itemType === typeFilter
-    
+
     // 3. Category filter
-    const matchesCategory = categoryFilter === '' || 
-                            (item.categoryId && (item.categoryId._id || item.categoryId) === categoryFilter)
-    
+    const matchesCategory = categoryFilter === '' ||
+      (item.categoryId && (item.categoryId._id || item.categoryId) === categoryFilter)
+
     return matchesSearch && matchesType && matchesCategory
   })
 
@@ -95,7 +95,7 @@ export function AdminInventoryPage() {
         >
           <option value="">All Categories</option>
           {categories.map((c) => (
-             <option key={c._id} value={c._id}>{c.name}</option>
+            <option key={c._id} value={c._id}>{c.name}</option>
           ))}
         </select>
       </div>
@@ -148,8 +148,8 @@ export function AdminInventoryPage() {
                       </span>
                     </td>
                     <td className="py-4 pr-6 text-right">
-                      <Link 
-                        to={`/admin/${item.itemType}s`} 
+                      <Link
+                        to={`/admin/${item.itemType}s?edit=${item._id}`}
                         className="text-emerald-600 hover:text-emerald-800 font-semibold text-sm hover:underline"
                       >
                         Edit

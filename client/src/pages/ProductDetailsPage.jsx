@@ -96,7 +96,7 @@ export function ProductDetailsPage() {
                   >
                     {updatingStock ? 'Saving...' : 'Update Stock'}
                   </button>
-                  <Link to="/admin/products" className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800">
+                  <Link to={`/admin/products?edit=${product._id}`} className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800">
                     Full Array
                   </Link>
                 </div>

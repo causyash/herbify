@@ -96,7 +96,7 @@ export function HerbDetailsPage() {
                   >
                     {updatingStock ? 'Saving...' : 'Update Stock'}
                   </button>
-                  <Link to="/admin/herbs" className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800">
+                  <Link to={`/admin/herbs?edit=${herb._id}`} className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800">
                     Full Array
                   </Link>
                 </div>
@@ -166,8 +166,8 @@ export function HerbDetailsPage() {
                         toast.success('Added to cart')
                       }}
                       className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-white ${herb.stock > 0
-                          ? 'bg-emerald-600 hover:bg-emerald-700'
-                          : 'bg-slate-400 cursor-not-allowed'
+                        ? 'bg-emerald-600 hover:bg-emerald-700'
+                        : 'bg-slate-400 cursor-not-allowed'
                         }`}
                     >
                       {herb.stock > 0 ? 'Add to cart' : 'Out of Stock'}

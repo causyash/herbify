@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../lib/api'
 import { uploadToCloudinary } from '../../admin/cloudinary'
 import { io } from 'socket.io-client'
+import { useSearchParams } from 'react-router-dom'
 
 function splitLines(v) {
   return String(v || '')
@@ -11,6 +12,7 @@ function splitLines(v) {
 }
 
 export function AdminProductsPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [items, setItems] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
@@ -74,8 +76,20 @@ export function AdminProductsPage() {
       active = false
       socket.disconnect()
     }
-
   }, [])
+
+  // Auto-open edit form if "edit" URL parameter is present
+  useEffect(() => {
+    const editId = searchParams.get('edit')
+    if (editId && items.length > 0) {
+      const targetItem = items.find((x) => x._id === editId)
+      if (targetItem) {
+        onEdit(targetItem)
+      }
+      searchParams.delete('edit')
+      setSearchParams(searchParams, { replace: true })
+    }
+  }, [searchParams, items, setSearchParams])
 
   async function onUpload(files) {
     if (!files || files.length === 0) return
