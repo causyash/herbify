@@ -72,7 +72,7 @@ mindmap
       Razorpay (Payments)
       Telegram Bot (Admin Alerts)
     Deployment
-      Netlify (Frontend)
+      Vercel (Frontend)
       Render (Backend)
 ```
 
@@ -82,7 +82,7 @@ mindmap
 
 ```mermaid
 graph TB
-    subgraph Client["🖥️ Client (Netlify)"]
+    subgraph Client["🖥️ Client (Vercel)"]
         React["React SPA<br/>Vite + React Router"]
         CSS["Tailwind CSS<br/>Dark Mode / Glassmorphism"]
     end
@@ -788,10 +788,10 @@ graph TB
         User["👤 User Browser"]
     end
 
-    subgraph Netlify["▲ Netlify (Frontend)"]
-        CDNFront["Global CDN\ncausyash.netlify.app"]
+    subgraph Vercel["▲ Vercel (Frontend)"]
+        CDNFront["Global CDN\nherbify.vercel.app"]
         Static["Static Files\n(React SPA build)"]
-        NetlifyToml["netlify.toml\n(SPA redirect rules)"]
+        VercelConfig["vercel.json\n(SPA redirect rules)"]
     end
 
     subgraph Render["🎯 Render (Backend)"]
@@ -815,7 +815,7 @@ graph TB
     APIServer --> TelegramBot
     User -->|Direct Cloudinary uploads| CloudinaryCDN
 
-    style Netlify fill:#0e1e36,color:#a7f3d0
+    style Vercel fill:#000000,color:#ffffff
     style Render fill:#46e3b7,color:#0e1e36
     style External fill:#fef3c7,stroke:#d97706
 ```
@@ -848,7 +848,7 @@ graph TB
 | 🖼️ Cloudinary Image CDN | ✅ | ✅ | Signed direct uploads |
 | 🔐 JWT Auth (httpOnly) | ✅ | ✅ | Cookie-based |
 | 🛡️ Rate Limiting | ✅ | ✅ | Auth + contact routes |
-| 🌐 Netlify Deployment | ✅ | ✅ | SPA redirect configured |
+| 🌐 Vercel Deployment | ✅ | ✅ | SPA redirect configured |
 | ⚙️ Render Deployment | ✅ | ✅ | Node.js backend |
 
 ---
