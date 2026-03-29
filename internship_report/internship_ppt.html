@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herbify Internship Presentation | Patel Yash Dipakbhai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #121212;
+            --text-muted: #5e5e5e;
+            --accent-color: #8d7b68; /* Sophisticated Earth/Herb tone */
+            --border-color: #eeeeee;
+            --slide-transition: 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Presentation Container */
+        .presentation {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            transition: transform var(--slide-transition);
+        }
+
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* Layout Types */
+        .layout-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            height: 100%;
+        }
+
+        .layout-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            padding: 5rem;
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1rem 2rem;
+            margin-top: 3rem;
+            text-align: left;
+        }
+
+        .detail-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Visual Elements */
+        .slide-image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slide-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.1);
+            transition: transform 1.5s ease;
+        }
+
+        .slide:hover .slide-image {
+            transform: scale(1.05);
+        }
+
+        .slide-content {
+            padding: 10% 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* List Styling */
+        .bullet-list {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 2rem;
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .bullet-list li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        .bullet-list li:hover {
+            color: var(--text-main);
+        }
+
+        /* Screenshots Display */
+        .screenshot-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .screenshot-card {
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            background: #fbfbfb;
+            transition: all 0.4s ease;
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-caption {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 1rem 0;
+            text-align: center;
+            letter-spacing: 0.05rem;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 3rem;
+            right: 4rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            width: 3.5rem;
+            height: 3.5rem;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent-color);
+            background: #fafafa;
+        }
+
+        .nav-btn svg {
+            width: 1.2rem;
+            height: 1.2rem;
+            fill: var(--text-main);
+        }
+
+        .slide-indicator {
+            position: fixed;
+            bottom: 4.2rem;
+            left: 4rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.2rem;
+            color: var(--accent-color);
+            z-index: 100;
+        }
+
+        /* Header Logo */
+        .header-logo {
+            position: fixed;
+            top: 3rem;
+            left: 4rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .accent-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        /* Print optimization */
+        @media print {
+            .nav-controls, .header-logo, .slide-indicator, .download-btn { display: none !important; }
+            body { overflow: visible; height: auto; }
+            .presentation { transform: none !important; display: block !important; height: auto; }
+            .slide { 
+                height: 100vh; 
+                width: 100vw; 
+                page-break-after: always; 
+                display: flex !important; 
+                visibility: visible !important;
+                opacity: 1 !important;
+                position: relative;
+            }
+            .slide-content > * { animation: none !important; opacity: 1 !important; transform: none !important; }
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+        }
+
+        /* Download Button Styling */
+        .download-btn {
+            position: fixed;
+            top: 3rem;
+            right: 10rem;
+            z-index: 1000;
+            padding: 0.8rem 1.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            background-color: var(--text-main);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .download-btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .download-btn svg {
+            width: 1rem;
+            height: 1rem;
+            fill: currentColor;
+        }
+
+        /* Animations */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .active .slide-content > * {
+            animation: fadeInScale 0.8s forwards;
+        }
+
+        .slide-content h2 { animation-delay: 0.2s; }
+        .slide-content p { animation-delay: 0.4s; }
+        .slide-content .bullet-list { animation-delay: 0.6s; }
+
+    </style>
+</head>
+<body>
+
+    <button class="download-btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download PDF
+    </button>
+
+    <div class="header-logo">
+        <div class="accent-dot"></div>
+        <div class="logo-text">Herbify</div>
+    </div>
+
+    <div class="slide-indicator" id="slideIndicator">01 / 10</div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" title="Previous Slide (Left Arrow)">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <button class="nav-btn" id="nextBtn" title="Next Slide (Right Arrow / Space)">
+            <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
+    </div>
+
+    <div class="presentation" id="presentation">
+        
+        <!-- Slide 1: Title -->
+        <section class="slide layout-center active">
+            <h3>Final Internship Presentation</h3>
+            <h1>Herbify — MERN Stack<br>E-Commerce System</h1>
+            <p>A sustainable approach to digital health & wellness retail.</p>
+            
+            <div class="details-grid">
+                <span class="detail-label">Student</span>
+                <span class="detail-value">Patel Yash Dipakbhai (Exam No. 2868)</span>
+                
+                <span class="detail-label">Internship Organization</span>
+                <span class="detail-value">HVG Infotech Pvt LTD</span>
+                
+                <span class="detail-label">Internal Guide</span>
+                <span class="detail-value">Mr. Miraj Mahant</span>
+                
+                <span class="detail-label">Duration</span>
+                <span class="detail-value">Dec 15, 2025 — Feb 15, 2026</span>
+            </div>
+        </section>
+
+        <!-- Slide 2: Introduction -->
+        <section class="slide layout-split">
+            <div class="slide-image-container">
+                <img src="slides_images/intro.png" class="slide-image" alt="Office">
+            </div>
+            <div class="slide-content">
+                <h3>01 — The Organization</h3>
+                <h2>HVG Infotech<br>Pvt LTD</h2>
+                <p>A dynamic software development firm pioneering in scalable web and mobile solutions.</p>
+                <ul class="bullet-list">
+                    <li>Multi-disciplinary IT solutions provider</li>
+                    <li>Industry-leading web development department</li>
+                    <li>Commitment to agile and high-quality software delivery</li>
+                    <li>Fostering innovation in MERN and Full Stack technologies</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 3: Objectives -->
+        <section class="slide layout-split">
+            <div class="slide-content">
+                <h3>02 — Vision & Objectives</h3>
+                <h2>Practical Industry Immersive</h2>
+                <p>Bridging the gap between academic theory and real-world implementation.</p>
+                <ul class="bullet-list">
+                    <li>Gaining deep-dive experience in the MERN Stack ecosystem</li>
+                    <li>Developing a real-time, responsive e-commerce architecture</li>
+                    <li>Mastering industrial security protocols (JWT, Bcrypt)</li>
+                    <li>Understanding the lifecycle of a production-ready application</li>
+                </ul>
+            </div>
+            <div class="slide-image-container">
+                <img src="slides_images/objectives.png" class="slide-image" alt="Workspace">
+            </div>
+        </section>
+
+        <!-- Slide 4: Project Overview -->
+        <section class="slide layout-split">
+            <div class="slide-image-container">
+                <img src="screenshots/homepage.png" class="slide-image" alt="Herbify Homepage" style="filter: grayscale(0) contrast(1); object-position: top;">
+            </div>
+            <div class="slide-content">
+                <h3>03 — Project Overview</h3>
+                <h2>Herbify<br>Botanical Retail</h2>
+                <p>An eco-conscious e-commerce platform dedicated to herbal and natural wellness products.</p>
+                <ul class="bullet-list">
+                    <li>Dynamic product cataloging system</li>
+                    <li>Seamless user experience across all devices</li>
+                    <li>Optimized search and filtering capabilities</li>
+                    <li>Sustainable branding and minimalist interface design</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 5: Work Done -->
+        <section class="slide layout-split">
+            <div class="slide-content">
+                <h3>04 — Core Contributions</h3>
+                <h2>Architecting the Foundation</h2>
+                <p>Iterative development focused on scalability and robust data management.</p>
+                <ul class="bullet-list">
+                    <li>Engineered RESTful API pathways using Express.js</li>
+                    <li>Designed flexible NoSQL schemas in MongoDB Atlas</li>
+                    <li>Developed reactive UI components using React Hooks</li>
+                    <li>Implemented centralized state management via Context API</li>
+                </ul>
+            </div>
+            <div class="slide-image-container">
+                <img src="slides_images/outcomes.png" class="slide-image" alt="Coding">
+            </div>
+        </section>
+
+        <!-- Slide 6: Modules -->
+        <section class="slide layout-split">
+            <div class="slide-image-container">
+                <div style="display: grid; grid-template-rows: 1fr 1fr; height: 100%;">
+                    <img src="screenshots/login.png" class="slide-image" alt="Login" style="filter: grayscale(1) invert(0.05);">
+                    <img src="screenshots/admin.png" class="slide-image" alt="Admin" style="filter: grayscale(1);">
+                </div>
+            </div>
+            <div class="slide-content">
+                <h3>05 — System Modules</h3>
+                <h2>Feature Ecosystem</h2>
+                <p>A comprehensive suite of modules designed for both users and administrators.</p>
+                <ul class="bullet-list">
+                    <li><strong>Authentication:</strong> Secure JWT-based session handling</li>
+                    <li><strong>Product Mgmt:</strong> Full CRUD capability for administrators</li>
+                    <li><strong>Commerce Engine:</strong> Real-time cart and order processing</li>
+                    <li><strong>Admin Dashboard:</strong> Visual metrics and user oversight</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 7: Tech Stack -->
+        <section class="slide layout-center">
+            <h3>06 — Technical Framework</h3>
+            <h2>The MERN Ecosystem</h2>
+            <p>Leveraging modern industry standards for high-performance delivery.</p>
+            
+            <div class="screenshot-pair" style="max-width: 900px;">
+                <div class="screenshot-card">
+                    <img src="screenshots/postman.png" alt="API Testing">
+                    <div class="screenshot-caption">API Testing & Validation (Postman)</div>
+                </div>
+                <div class="screenshot-card">
+                    <img src="screenshots/dashboard.png" alt="Dashboard">
+                    <div class="screenshot-caption">Frontend State Management</div>
+                </div>
+            </div>
+
+            <div class="details-grid" style="margin-top: 4rem; grid-template-columns: repeat(4, 1fr);">
+                <div style="text-align: center;">
+                    <span class="detail-label">Database</span>
+                    <div class="detail-value">MongoDB Atlas</div>
+                </div>
+                <div style="text-align: center;">
+                    <span class="detail-label">Backend</span>
+                    <div class="detail-value">Express & Node.js</div>
+                </div>
+                <div style="text-align: center;">
+                    <span class="detail-label">Frontend</span>
+                    <div class="detail-value">React & Vite</div>
+                </div>
+                <div style="text-align: center;">
+                    <span class="detail-label">Deployment</span>
+                    <div class="detail-value">Vercel CC/CD</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Learning Outcomes -->
+        <section class="slide layout-split">
+            <div class="slide-image-container">
+                <img src="slides_images/outcomes.png" class="slide-image" alt="Growth">
+            </div>
+            <div class="slide-content">
+                <h3>07 — Growth & Proficiency</h3>
+                <h2>Learning Outcomes</h2>
+                <p>Transcendence of theoretical knowledge into professional engineering aptitude.</p>
+                <ul class="bullet-list">
+                    <li>Mastery of non-relational database design and scaling</li>
+                    <li>Advanced React proficiency and performance tuning</li>
+                    <li>Understanding of industry-standard security vulnerabilities</li>
+                    <li>Collaborative Git workflows and deployment pipelines</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 9: Conclusion -->
+        <section class="slide layout-split">
+            <div class="slide-content">
+                <h3>08 — Final Assessment</h3>
+                <h2>Conclusion</h2>
+                <p>A transformative journey from student to contributing developer.</p>
+                <ul class="bullet-list">
+                    <li>Successfully deployed Herbify to production standards</li>
+                    <li>Gained invaluable mentorship from industry veterans</li>
+                    <li>Solidified interest in Full Stack Engineering</li>
+                    <li>Ready for professional industry challenges</li>
+                </ul>
+            </div>
+            <div class="slide-image-container">
+                <img src="slides_images/conclusion.png" class="slide-image" alt="Success">
+            </div>
+        </section>
+
+        <!-- Slide 10: Thank You -->
+        <section class="slide layout-center">
+            <h3>Finis</h3>
+            <h1 style="font-size: 8rem;">Thank You.</h1>
+            <p style="letter-spacing: 0.5rem; text-transform: uppercase; font-size: 0.8rem; margin-top: 2rem;">Questions & Discussion</p>
+            
+            <div style="margin-top: 4rem; opacity: 0.6;">
+                <p>Patel Yash Dipakbhai</p>
+                <p style="font-size: 0.9rem;">Internal Guide: Mr. Miraj Mahant</p>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const presentation = document.getElementById('presentation');
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicator = document.getElementById('slideIndicator');
+        
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        function updateSlide() {
+            presentation.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            
+            // Manage active class for animations
+            slides.forEach((slide, index) => {
+                if(index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // Update indicator
+            indicator.innerText = `${String(currentSlide + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        });
+
+        // Keyboard Controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateSlide();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlide();
+                }
+            }
+        });
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>

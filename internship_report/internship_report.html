@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Internship Report</title>
+    <style>
+  @page { 
+    size: A4; 
+    margin: 0; 
+  }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 13pt;
+    line-height: 1.6;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    counter-reset: page-num;
+  }
+  h1, h2, h3 { text-align: center; margin-top: 10px; margin-bottom: 20px; text-transform: uppercase; }
+  .page {
+    page-break-after: always;
+    width: 210mm;
+    height: 297mm;
+    position: relative;
+    padding: 2.5cm;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .page-last {
+    width: 210mm;
+    height: 297mm;
+    position: relative;
+    padding: 2.5cm;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .page.numbered, .page-last.numbered {
+    counter-increment: page-num;
+  }
+  .page.numbered::after, .page-last.numbered::after {
+    content: counter(page-num);
+    position: absolute;
+    bottom: 1.5cm;
+    right: 2.5cm;
+    font-size: 12pt;
+  }
+  .table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 11pt; }
+  .table th, .table td { border: 1px solid black; padding: 10px; text-align: left; }
+  .logbook-table th, .logbook-table td { border: 1px solid black; padding: 5px; text-align: center; vertical-align: middle; word-wrap: break-word; }
+  .certificate-img { width: 100%; height: auto; max-height: 220mm; object-fit: contain; display: block; margin: 0 auto; border: 1px solid #ddd; }
+  .screenshot { width: 100%; max-height: 110mm; display: block; margin: 15px auto; border: 1px solid #ccc; object-fit: contain; }
+  .full-screenshot { width: 100%; height: auto; display: block; margin: 15px auto; border: 1px solid #ccc; object-fit: contain; }
+  p { text-align: justify; margin-bottom: 15px; }
+  ul.content-list { margin-left: 20px; outline: none; }
+  .centered { text-align: center; }
+  @media print {
+    .no-print { display: none; }
+    body { font-size: 12pt; }
+  }
+  .download-btn {
+    position: fixed; top: 20px; right: 20px; z-index: 1000;
+    padding: 12px 24px; font-size: 16px; background-color: #007bff;
+    color: white; border: none; border-radius: 5px; cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .download-btn:hover { background-color: #0056b3; }
+</style>
+</head>
+<body>
+  <button onclick="window.print()" class="no-print download-btn">Download PDF</button>
+<div class="page">
+
+    <h2>ACKNOWLEDGEMENT</h2>
+    <br><br>
+    <p>At this point, when I am about to finish my internship project work, it is my privilege to thank all those people for their contribution to this Internship. Firstly, I wish my heartfelt thanks to the Principal and Faculty of C. B. Patel Computer College, who always motivate me to fulfill my dreams and lead in the direction of growth. They have given valuable input for the effective completion of this project.</p>
+    <p>Next, I would like to thank our Placement & Internship Coordinators, who always work and think in the direction of betterment of the students and the institute, as well as supporting with all the necessary resources to finish our golden years of graduation. I thank my internal guide <strong>Mr. Miraj Mahant</strong> for his valuable and continuous guidance for the preparation of this Internship Training report.</p>
+    <p>I cannot forget the contribution of my external internship guide <strong>Mr. Umang Hingu</strong> and the industry supervisor at the organization without the support of whom I would have never completed this training. Their constant help, guidance, and continuous teaching have given so many inputs on the academic as well as the technical front. Their patience and expertise allowed me to navigate complex development hurdles efficiently.</p>
+    <p>I would also like to express my gratitude towards my family and friends for their kind co-operation and encouragement which helped me in the successful completion of this internship. This experience has significantly contributed to my personal and professional development.</p>
+    <br><br><br><br>
+  </div>
+<div class="page">
+
+    <h2>Index</h2>
+    <table class="table" style="font-size: 12pt;">
+      <thead>
+        <tr>
+          <th style="width: 15%; text-align:center;">SR.NO</th>
+          <th>PARTICULAR</th>
+          <th style="width: 15%; text-align:center;">PAGE NO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="text-align:center;">1</td><td>Certificates</td><td style="text-align:center;">1-3</td></tr>
+        <tr><td style="text-align:center;">2</td><td>Declaration</td><td style="text-align:center;">4</td></tr>
+        <tr><td style="text-align:center;">3</td><td>Internship Details & Weekly Reports</td><td style="text-align:center;">5-8</td></tr>
+        <tr><td style="text-align:center;">4</td><td>Objectives of Internship</td><td style="text-align:center;">9</td></tr>
+        <tr><td style="text-align:center;">5</td><td>Description of Work Done & Modules</td><td style="text-align:center;">10-15</td></tr>
+        <tr><td style="text-align:center;">6</td><td>Learning Outcomes</td><td style="text-align:center;">16</td></tr>
+        <tr><td style="text-align:center;">7</td><td>Challenges and Solutions</td><td style="text-align:center;">17</td></tr>
+        <tr><td style="text-align:center;">8</td><td>Weekly Summary</td><td style="text-align:center;">18</td></tr>
+        <tr><td style="text-align:center;">9</td><td>Conclusions</td><td style="text-align:center;">19</td></tr>
+        <tr><td style="text-align:center;">10</td><td>Reference</td><td style="text-align:center;">20</td></tr>
+      </tbody>
+    </table>
+  </div>
+<div class="page numbered">
+<h2>Internship Offer Letter</h2><br><img src="cetificates/offerletter.png" alt="Offer Letter" class="certificate-img"></div>
+<div class="page numbered">
+<h2>Internship Completion Certificate</h2><br><img src="cetificates/intershipcertificate.png" alt="Internship Certificate" class="certificate-img"></div>
+<div class="page numbered">
+<h2>Internship Letter of Completion</h2><br><img src="cetificates/loc.png" alt="LOC" class="certificate-img"></div>
+<div class="page numbered">
+
+    <h2>Declaration</h2>
+    <br><br>
+    <p>I hereby declare that the internship report on the EcoCart project presented here is my original work, conceptualized and executed under the supervision of my guide <strong>Mr. Umang Hingu</strong> during the course of my internship. The information submitted is authentic and has not been submitted entirely or in part for the award of any other degree or diploma.</p>
+    <br><br>
+    <div style="margin-top: 40px; line-height: 2;">
+      <p><strong>Name:</strong> Yash Patel</p>
+      <p><strong>Course:</strong> BCA (Bachelor of Computer Applications)</p>
+      <p><strong>College:</strong> C. B. Patel Computer College</p>
+      <p><strong>University:</strong> Veer Narmad South Gujarat University</p>
+      <p><strong>Place:</strong> Surat</p>
+      <p><strong>Date:</strong> 28th March 2026</p>
+    </div>
+  </div>
+<div class="page numbered">
+
+    <h2>Internship Details</h2>
+    <br>
+    <table class="table" style="font-size: 12pt; border: none;">
+      <tbody>
+        <tr>
+          <td style="border: none; width: 45%; padding: 15px 0;"><strong>Name and Address of the Organization:</strong></td>
+          <td style="border: none; padding: 15px 0;">HVG Infotech PVT ltd.<br>1019, 1020, 1021, Silver Business Point, Near VIP Circle, opposite Royal Square, Uttran, Surat, Gujarat - 394105</td>
+        </tr>
+        <tr>
+          <td style="border: none; padding: 15px 0;"><strong>Department/Team Worked In:</strong></td>
+          <td style="border: none; padding: 15px 0;">Web Technologies & Full Stack Development</td>
+        </tr>
+        <tr>
+          <td style="border: none; padding: 15px 0;"><strong>Internship Mode:</strong></td>
+          <td style="border: none; padding: 15px 0;">Hybrid (On-site collaboration & Remote efficiency)</td>
+        </tr>
+        <tr>
+          <td style="border: none; padding: 15px 0;"><strong>Industry Supervisor & Designation:</strong></td>
+          <td style="border: none; padding: 15px 0;">Mr. Umang Hingu<br>Senior Software Engineer / Industry Supervisor</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <h3>Nature of the Organization</h3>
+    <p>HVG Infotech PVT ltd. is a premier software development and IT consulting firm that delivers innovative, scalable, and high-performance digital solutions to a global clientele. The organization specializes in modern web architectures, mobile application development, and cloud-integrated systems. With a core focus on the MERN stack and secure cloud deployments, HVG Infotech maintains a reputation for technical excellence and agile project management.</p>
+    <p>During my tenure, I was immersed in a professional dev-ops culture that emphasizes clean code practices, modular backend architectures, and secure data handling protocols. The hybrid working model allowed for direct mentorship during office hours while fostering independent problem-solving capabilities during remote development phases.</p>
+  </div>
+<div class="page numbered">
+
+    <h2>Internship Log Book</h2>
+    <table class="table logbook-table" style="font-size: 8pt; margin-top: 10px;">
+      <thead>
+        <tr>
+          <th style="width:5%">Wk No.</th>
+          <th style="width:12%">Date</th>
+          <th style="width:18%">Task Assigned</th>
+          <th style="width:18%">Task Completed</th>
+          <th style="width:15%">Remarks / Tools</th>
+          <th style="width:16%">Internal Guide<br>(Sign)</th>
+          <th style="width:16%">External Guide<br>(Sign)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="height:140px;">
+          <td>1</td>
+          <td>15-12-25<br>to<br>21-12-25</td>
+          <td style="text-align:left;">• Project analysis<br>• MERN env setup<br>• DB collection design</td>
+          <td style="text-align:left;">• Setup Node environment<br>• Configured MongoDB Atlas<br>• Implemented User Auth</td>
+          <td>Node.js, Express, MongoDB. Successfully connected Atlas.</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr style="height:140px;">
+          <td>2</td>
+          <td>22-12-25<br>to<br>28-12-25</td>
+          <td style="text-align:left;">• React UI structures<br>• JWT sessions logic<br>• Product sort endpoints</td>
+          <td style="text-align:left;">• Structured React app<br>• Connected JWT to DOM<br>• Finalized Product models</td>
+          <td>React.js, JWT. Session management verified.</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr style="height:140px;">
+          <td>3</td>
+          <td>29-12-25<br>to<br>04-01-26</td>
+          <td style="text-align:left;">• Shopping Cart logic<br>• Cart State updates<br>• API security audits</td>
+          <td style="text-align:left;">• Operational cart system<br>• Context API integration<br>• Validated API payloads</td>
+          <td>Context API, Postman. Payloads tested successfully.</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr style="height:140px;">
+          <td>4</td>
+          <td>05-01-26<br>to<br>15-02-26</td>
+          <td style="text-align:left;">• Responsive polishing<br>• Vercel Deployment<br>• Documentation final</td>
+          <td style="text-align:left;">• UI Mobile optimized<br>• Launched on Vercel<br>• Finalised Report</td>
+          <td>Vercel, Git. UI is responsive across devices.</td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<div class="page numbered">
+
+    <h2>Internship Progress Report</h2>
+    <table class="table" style="font-size: 10pt;">
+      <thead>
+        <tr>
+          <th style="width:15%;">Date</th>
+          <th style="width:60%;">Work Done / Task</th>
+          <th style="width:25%;">Technology Used</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>15-12-2025</td><td>Joined internship and received introduction about company workflow and MERN stack project requirements.</td><td>-</td></tr>
+        <tr><td>16-12-2025</td><td>Understood the project requirement of developing an E-commerce web application. Initialized Node.js environment.</td><td>Node.js, Express</td></tr>
+        <tr><td>18-12-2025</td><td>Created a new React.js project for the frontend architecture. Structured component folders.</td><td>React.js, Vite</td></tr>
+        <tr><td>22-12-2025</td><td>Created the MongoDB Atlas clusters and configured Mongoose connections securely.</td><td>MongoDB, Mongoose</td></tr>
+        <tr><td>24-12-2025</td><td>Developed User Registration schemas and connected it with the backend database.</td><td>Node.js, Express, MongoDB</td></tr>
+        <tr><td>26-12-2025</td><td>Implemented Login functionality with bcrypt authentication and JWT tokens validation.</td><td>bcrypt, JSON Web Tokens</td></tr>
+        <tr><td>30-12-2025</td><td>Developed Product Category endpoints to sort and display products appropriately.</td><td>Express API, Mongoose</td></tr>
+        <tr><td>02-01-2026</td><td>Implemented Add to Cart functionality on the React frontend using state hooks.</td><td>React Hooks, Axios</td></tr>
+        <tr><td>05-01-2026</td><td>Created main Shopping UI page to display selected items and total prices dynamically.</td><td>React.js, CSS</td></tr>
+        <tr><td>08-01-2026</td><td>Improved shopping cart functionality to update product quantities and handle deletions natively.</td><td>React Context API</td></tr>
+        <tr><td>10-01-2026</td><td>Developed Admin Dashboard views for tracking application metrics and user influx.</td><td>React Router, HTML</td></tr>
+        <tr><td>12-01-2026</td><td>Created Product Management module in admin panel allowing creations, updates, and deletes.</td><td>React, Express API</td></tr>
+      </tbody>
+    </table>
+  </div>
+<div class="page numbered">
+
+    <h2>Internship Progress Report (Contd.)</h2>
+    <table class="table" style="font-size: 10pt;">
+      <thead>
+        <tr>
+          <th style="width:15%;">Date</th>
+          <th style="width:60%;">Work Done / Task</th>
+          <th style="width:25%;">Technology Used</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>18-01-2026</td><td>Developed Order Management page for admin to securely view and manage placed orders.</td><td>React, MongoDB</td></tr>
+        <tr><td>20-01-2026</td><td>Created User Management endpoints for admin to restrict and manage registered users.</td><td>Express API, Mongoose</td></tr>
+        <tr><td>22-01-2026</td><td>Designed specific Product Details page where users can view full high-res information.</td><td>React, CSS Grid</td></tr>
+        <tr><td>24-01-2026</td><td>Completed rigorous backend API testing using Postman capturing JSON payloads effectively.</td><td>Postman, Node.js</td></tr>
+        <tr><td>28-01-2026</td><td>Added complex navigation search functionality to help users trace products efficiently.</td><td>React, Express query</td></tr>
+        <tr><td>30-01-2026</td><td>Implemented strict session management intercepting Axios requests globally across the client.</td><td>Axios, JWT</td></tr>
+        <tr><td>02-02-2026</td><td>Developed Order History interface where active users trace their previous shipments.</td><td>React, Node.js</td></tr>
+        <tr><td>05-02-2026</td><td>Implemented responsive User Profile configuration modules styling via Flexbox.</td><td>HTML, CSS Flexbox</td></tr>
+        <tr><td>08-02-2026</td><td>Configured environment variables targeting Razorpay gateway interfaces securely.</td><td>Node.js dotenv, Razorpay</td></tr>
+        <tr><td>10-02-2026</td><td>Tested all deployed modules rigorously fixing console errors and layout misalignments.</td><td>Debugging Tools</td></tr>
+        <tr><td>12-02-2026</td><td>Compiled project files orchestrating the Vercel branch integrations natively.</td><td>Vercel, Git</td></tr>
+        <tr><td>15-02-2026</td><td>Prepared and finalized formatting for final internship documentation report submissions.</td><td>HTML, CSS</td></tr>
+      </tbody>
+    </table>
+  </div>
+<div class="page numbered">
+
+    <h2>Objectives of Internship</h2>
+    <br><br>
+    <p>The primary objectives of undertaking this internship were to bridge the gap between academic theory and practical, industry-standard software engineering. In the context of the EcoCart project, the goals were:</p>
+    <ul class="content-list" style="line-height: 2;">
+      <li><strong>Practical Application of Full-Stack Technologies:</strong> To apply the MERN stack (MongoDB, Express.js, React.js, Node.js) in building a responsive, real-world e-commerce application.</li>
+      <li><strong>System Architecture & Database Design:</strong> To understand and execute robust NoSQL schemas using MongoDB Atlas, facilitating scalable data mapping for products, users, and orders.</li>
+      <li><strong>Authentication and Security:</strong> To implement secure authorization workflows using Bcrypt and JSON Web Tokens (JWT), ensuring that sensitive user details and administrative features remain protected.</li>
+      <li><strong>Frontend Interactivity & State Management:</strong> To master modern React.js paradigms, including the Context API and hooks, for dynamic features such as a real-time shopping cart.</li>
+      <li><strong>Professional Workflow & Deployment:</strong> To familiarize myself with industry workflows, debugging practices, API testing, and seamless application deployment.</li>
+    </ul>
+  </div>
+<div class="page numbered">
+
+    <h2>Description of Work Done</h2>
+    <p>The operational framework of my internship was dedicated to the architecture and deployment of a professional-grade sustainable e-commerce application named EcoCart. This project leveraged the full MERN stack (MongoDB, Express.js, React.js, and Node.js) to deliver a seamless shopping experience for users interested in sustainable and eco-friendly products.</p>
+    <p><strong>System Architecture Initialization:</strong> The foundation involved setting up a robust Node.js runtime environment. I utilized Express.js to architect structured RESTful API pathways that handle client requests for product data, user authentication, and order processing. The database logic was implemented using MongoDB Atlas, where I designed flexible NoSQL schemas using Mongoose. This allowed for scalable data relationships, such as linking user profiles to their transaction histories and cart states.</p>
+    <p><strong>User Management & Security:</strong> A critical phase was implementing secure user authentication. I integrated Bcrypt for password hashing and used JSON Web Tokens (JWT) to manage persistent user sessions. This ensured that sensitive user data remained protected and that administrative routes were restricted to authorized personnel only.</p>
+    <p><strong>Frontend Interactivity & Deployment:</strong> The user interface was developed using React.js, employing hooks like useState and useEffect for reactive state management. I implemented a dynamic shopping cart system using the Context API, allowing users to track their selections in real-time without reloading the page. The application was finally optimized for production and deployed on Vercel, utilizing CI/CD pipelines for automated updates from our Git repository.</p>
+  </div>
+<div class="page numbered">
+
+    <h2>Modules / Tasks Completed</h2>
+    <h3>Home Page</h3>
+    <p>The Home Page serves as the primary landing hub for EcoCart, showcasing featured eco-friendly products and navigating users through the store's diverse categories. It utilizes React's functional components for reactive rendering and optimized loading states.</p>
+    <img src="screenshots/homepage.png" alt="Home Page" class="full-screenshot">
+  </div>
+<div class="page numbered">
+
+    <h2>Module 1: User Registration and Login</h2>
+    <ul class="content-list">
+      <li>Created user registration page with form validation</li>
+      <li>Implemented login authentication via JWT and session storage</li>
+      <li>Connected user data securely with MongoDB Atlas clusters via Mongoose</li>
+      <li>Executed password hashing using Bcrypt libraries for enhanced security</li>
+    </ul>
+    <h3>Login & Security Implementation</h3>
+    <img src="screenshots/login.png" alt="Login Page" class="full-screenshot">
+  </div>
+<div class="page numbered">
+ 
+    <h2>Module 2: Admin Dashboard</h2>
+    <p>The Admin Dashboard provides a centralized interface for monitoring store operations, including user activity, order statuses, and overall sales metrics. It utilizes protected routes to ensure only authorized administrative personnel can access sensitive management tools.</p>
+    <img src="screenshots/admin.png" alt="Admin Dashboard" class="full-screenshot">
+  </div>
+<div class="page numbered">
+
+    <h2>Module 3: Product Management</h2>
+    <p>This module handles the core inventory logic of the application. Admins can add new eco-friendly products, update existing details (price, description, stock), and delete obsolete entries. The interface is optimized for rapid data entry and visual clarity using CSS Grid layouts.</p>
+    <img src="screenshots/dashboard.png" alt="Product Pages" class="full-screenshot">
+  </div>
+<div class="page numbered">
+
+    <h2>Module 4: Shopping Cart Interactivity</h2>
+    <p>The shopping cart module enables users to review their selected eco-friendly products, adjust quantities locally, and securely proceed to checkout while managing dynamic application state efficiently using the React Context API.</p>
+    <img src="screenshots/postman.png" alt="Shopping Cart" class="full-screenshot">
+  </div>
+<div class="page numbered">
+
+    <h2>Learning Outcomes</h2>
+    <p>My tenure at the organization allowed me to acquire a diverse set of technical and professional skills that are essential in the modern software development industry. The practical nature of the tasks ensured that theoretical knowledge was effectively converted into usable industry expertise.</p>
+    <ul class="content-list">
+      <li><strong>Full Stack Cohesiveness:</strong> I developed the ability to manage the entire data lifecycle, from designing backend database schemas to rendering that data on a dynamic frontend. This "big picture" understanding is vital for troubleshooting complex system-wide issues.</li>
+      <li><strong>RESTful API Design:</strong> I mastered the principles of REST architecture, learning how to design intuitive and secure endpoints that can handle various HTTP methods and status codes reliably.</li>
+      <li><strong>Advanced React State Management:</strong> Beyond basic components, I learned to use the Context API and custom hooks to manage global application state, ensuring a smooth and responsive user experience even with complex data requirements.</li>
+      <li><strong>Industrial Security Protocols:</strong> The implementation of JWT and Bcrypt provided a solid foundation in web security, teaching me how to protect applications against common vulnerabilities like unauthorized access and data tampering.</li>
+      <li><strong>Agile Development Practices:</strong> Working within a professional environment exposed me to version control (Git) and collaborative development workflows, teaching me how to manage feature branches and merge code efficiently.</li>
+    </ul>
+  </div>
+<div class="page numbered">
+
+    <h2>Challenges and Solutions</h2>
+    <h3>Challenge: State Synchronization Bottlenecks</h3>
+    <p><strong>Problem:</strong> During the development of the cart module, asynchronous state updates occasionally caused UI glitches where the total price did not match the items listed in the cart. This led to user confusion and potential data inconsistency.</p>
+    <p><strong>Solution:</strong> I refactored the cart logic to use React's Context API combined with a centralized action reducer. This ensured that every update to the cart triggered a synchronous state re-calculation across all relevant components, eliminating discrepancies and providing a reliable real-time interface.</p>
+    <br>
+    <h3>Challenge: Database Connection Stability</h3>
+    <p><strong>Problem:</strong> Frequent timeouts were encountered when connecting the local development server to the remote MongoDB Atlas cluster, specifically during high-latency network intervals.</p>
+    <p><strong>Solution:</strong> I implemented a robust reconnection logic within the Mongoose connection settings, increasing the timeout thresholds and adding retry mechanisms. Additionally, I optimized the database queries to be more specific, reducing the payload size and decreasing the overall connection time required for data retrieval.</p>
+  </div>
+<div class="page numbered">
+
+    <h2>Weekly Summary</h2>
+    <br>
+    <table class="table" style="font-size: 11pt;">
+      <thead>
+        <tr>
+          <th style="width: 15%; text-align: center;">Week Number</th>
+          <th>Summary of Major Accomplishments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center;">Week 1</td>
+          <td>Initialized the EcoCart project ecosystem. Setup Node.js/Express server and established secure MongoDB Atlas connections. Implemented the core user schema and authentication logic (Bcrypt/JWT).</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">Week 2</td>
+          <td>Focused on the Backend Product Architecture. Developed comprehensive CRUD APIs for product management, image handling, and category-based sorting algorithms.</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">Week 3</td>
+          <td>Front-end Development phase. Built the responsive UI using React.js and Vite. Integrated the Context API for efficient shopping cart state management and persistence.</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">Week 4</td>
+          <td>Admin Dashboard & Final Deployment. Developed secure dashboards for order tracking and stock management. Conducted rigorous API testing via Postman and successfully deployed the EcoCart system on Vercel.</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <p>Overall, the internship followed a structured progression from system design to full-scale deployment, ensuring every core module was tested for scalability and security in a hybrid professional environment.</p>
+  </div>
+<div class="page numbered">
+
+    <h2>Conclusions</h2>
+    <p>The internship at HVG Infotech PVT ltd. proved to be a transformative experience, bridging the gap between academic learning and professional software engineering. By working on the EcoCart project, I gained not only technical proficiency with the MERN stack but also a deep understanding of the professional workflows and standards required in the tech industry.</p>
+    <p>The successful deployment of a fully functional e-commerce application serves as a testament to the effectiveness of the training provided. I feel confident in my ability to architect, secure, and deploy complex web applications from scratch, navigating the various challenges that arise during the software development lifecycle.</p>
+    <p>In conclusion, this internship has solidified my interest in Full Stack development and has provided me with the necessary tools and mindset to contribute effectively to future engineering teams. The mentorship from Mr. Miraj Mahant and Mr. Umang Hingu was invaluable, and I am grateful for the opportunity to have worked in such a productive and innovative environment.</p>
+  </div>
+<div class="page-last numbered">
+
+    <h2>Reference</h2>
+    <br><br>
+    <ol class="content-list">
+      <li>Node.js Technical Integration Guidelines. <br><i>https://nodejs.org/en/docs/</i></li>
+      <br>
+      <li>Express.js Framework Architectures. <br><i>https://expressjs.com/</i></li>
+      <br>
+      <li>React Global Developer Specifications. <br><i>https://reactjs.org/docs/getting-started.html</i></li>
+      <br>
+      <li>MongoDB Atlas Administrative Manuals. <br><i>https://docs.mongodb.com/</i></li>
+      <br>
+      <li>Axios Promise & HTTP Networking Practices. <br><i>https://axios-http.com/docs/intro</i></li>
+      <br>
+      <li>JSON Web Token Security Practices. <br><i>https://jwt.io/introduction</i></li>
+      <br>
+      <li>MERN Stack Tutorials & Best Practices. <br><i>https://www.mongodb.com/mern-stack</i></li>
+    </ol>
+  </div>
+</body>
+</html>

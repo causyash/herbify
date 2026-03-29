@@ -1,0 +1,669 @@
+{
+  "info": {
+    "name": "Herbify API",
+    "_postman_id": "herbify-api-collection-v1",
+    "description": "Complete API collection for the Herbify e-commerce platform.\n\n## Setup\n1. Set the `baseUrl` variable to your local server (default: `http://localhost:5000`) or production URL.\n2. After a successful login, copy the `token` from the response and set it as the `authToken` collection variable.\n3. Admin-only routes require an account with `role: \"admin\"`.\n\n## Variables\n- `baseUrl` — API root URL\n- `authToken` — JWT access token (set after login)\n- `productSlug` — A valid product slug (e.g. `tulsi-kadha`)\n- `herbSlug` — A valid herb slug (e.g. `ashwagandha`)\n- `orderId` — A valid MongoDB order ObjectId\n- `categoryId` — A valid MongoDB category ObjectId\n- `productId` — A valid MongoDB product ObjectId\n- `herbId` — A valid MongoDB herb ObjectId\n- `userId` — A valid MongoDB user ObjectId\n- `contactId` — A valid MongoDB contact message ObjectId",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",     "value": "https://herbify-backend.onrender.com", "type": "string" },
+    { "key": "authToken",   "value": "",                      "type": "string" },
+    { "key": "productSlug", "value": "tulsi-kadha",           "type": "string" },
+    { "key": "herbSlug",    "value": "ashwagandha",           "type": "string" },
+    { "key": "orderId",     "value": "",                      "type": "string" },
+    { "key": "categoryId",  "value": "",                      "type": "string" },
+    { "key": "productId",   "value": "",                      "type": "string" },
+    { "key": "herbId",      "value": "",                      "type": "string" },
+    { "key": "userId",      "value": "",                      "type": "string" },
+    { "key": "contactId",   "value": "",                      "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/health", "host": ["{{baseUrl}}"], "path": ["api","health"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api","auth","register"] }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"code\": \"123456\",\n  \"rememberBrowser\": false\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/verify-otp", "host": ["{{baseUrl}}"], "path": ["api","auth","verify-otp"] }
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/resend-otp", "host": ["{{baseUrl}}"], "path": ["api","auth","resend-otp"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) {",
+                  "  pm.collectionVariables.set('authToken', json.token);",
+                  "  console.log('✅ authToken saved:', json.token.substring(0,30) + '...');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] },
+            "description": "On success, the `authToken` collection variable is automatically set via the Tests tab script."
+          }
+        },
+        {
+          "name": "Get Current User (me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api","auth","me"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/auth/logout", "host": ["{{baseUrl}}"], "path": ["api","auth","logout"] }
+          }
+        },
+        {
+          "name": "[DEV] Setup Admin",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/setup-admin?email=admin@example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","auth","setup-admin"],
+              "query": [{ "key": "email", "value": "admin@example.com" }]
+            },
+            "description": "⚠️ Development helper only. Creates or upgrades an account to admin with password `password123`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories (Public)",
+      "item": [
+        {
+          "name": "List Categories (tree)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/categories", "host": ["{{baseUrl}}"], "path": ["api","categories"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Herbs (Public)",
+      "item": [
+        {
+          "name": "List Herbs",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/herbs?page=1&limit=12",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","herbs"],
+              "query": [
+                { "key": "page",  "value": "1" },
+                { "key": "limit", "value": "12" },
+                { "key": "q",     "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Herb by Slug",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/herbs/{{herbSlug}}", "host": ["{{baseUrl}}"], "path": ["api","herbs","{{herbSlug}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products (Public)",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?page=1&limit=12",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","products"],
+              "query": [
+                { "key": "page",     "value": "1" },
+                { "key": "limit",    "value": "12" },
+                { "key": "q",        "value": "", "disabled": true },
+                { "key": "category", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by Slug",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/products/{{productSlug}}", "host": ["{{baseUrl}}"], "path": ["api","products","{{productSlug}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews (Public + Auth)",
+      "item": [
+        {
+          "name": "Get Reviews for Item",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews/product/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","reviews","product","{{productId}}"],
+              "variable": [{ "key": "itemType", "value": "product", "description": "product or herb" }]
+            },
+            "description": "Replace `product` with `herb` for herb reviews."
+          }
+        },
+        {
+          "name": "Post Review",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"text\": \"Amazing product! Highly recommend.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews/product/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","reviews","product","{{productId}}"]
+            },
+            "description": "Requires authentication. One review per user per item."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart (Auth)",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/cart", "host": ["{{baseUrl}}"], "path": ["api","cart"] }
+          }
+        },
+        {
+          "name": "Update Cart",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"itemType\": \"product\",\n      \"itemId\": \"{{productId}}\",\n      \"slug\": \"{{productSlug}}\",\n      \"name\": \"Tulsi Kadha\",\n      \"price\": 299,\n      \"image\": \"https://example.com/image.jpg\",\n      \"qty\": 2\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/cart", "host": ["{{baseUrl}}"], "path": ["api","cart"] },
+            "description": "Replaces the entire cart. Pass an empty `items` array to clear."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders (Auth)",
+      "item": [
+        {
+          "name": "Place Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shippingAddress\": {\n    \"fullName\": \"Test User\",\n    \"phone\": \"9999999999\",\n    \"addressLine1\": \"123 Green Street\",\n    \"addressLine2\": \"Apt 4B\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"pincode\": \"400001\"\n  }\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/orders", "host": ["{{baseUrl}}"], "path": ["api","orders"] },
+            "description": "Creates an order from the user's current cart. Cart must not be empty."
+          }
+        },
+        {
+          "name": "My Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/orders/my", "host": ["{{baseUrl}}"], "path": ["api","orders","my"] }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api","orders","{{orderId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments (Auth)",
+      "item": [
+        {
+          "name": "Create Razorpay Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{orderId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/payments/razorpay/create-order", "host": ["{{baseUrl}}"], "path": ["api","payments","razorpay","create-order"] }
+          }
+        },
+        {
+          "name": "Verify Razorpay Payment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"razorpay_order_id\": \"order_XXXXXXXXXXXX\",\n  \"razorpay_payment_id\": \"pay_XXXXXXXXXXXX\",\n  \"razorpay_signature\": \"<hmac_sha256_signature>\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/payments/razorpay/verify", "host": ["{{baseUrl}}"], "path": ["api","payments","razorpay","verify"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users (Auth)",
+      "item": [
+        {
+          "name": "Update My Addresses",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"addresses\": [\n    {\n      \"label\": \"Home\",\n      \"fullName\": \"Test User\",\n      \"phone\": \"9999999999\",\n      \"addressLine1\": \"123 Green Street\",\n      \"addressLine2\": \"\",\n      \"city\": \"Mumbai\",\n      \"state\": \"Maharashtra\",\n      \"pincode\": \"400001\"\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/users/me/addresses", "host": ["{{baseUrl}}"], "path": ["api","users","me","addresses"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "item": [
+        {
+          "name": "Submit Contact Message",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"I have a question about your herbal products.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/contact", "host": ["{{baseUrl}}"], "path": ["api","contact"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "description": "All routes in this folder require an admin JWT token.",
+      "item": [
+        {
+          "name": "Categories",
+          "item": [
+            {
+              "name": "List Categories (Admin)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/categories", "host": ["{{baseUrl}}"], "path": ["api","admin","categories"] }
+              }
+            },
+            {
+              "name": "Create Category",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Immunity Boosters\",\n  \"slug\": \"immunity-boosters\",\n  \"parentId\": null\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/categories", "host": ["{{baseUrl}}"], "path": ["api","admin","categories"] }
+              }
+            },
+            {
+              "name": "Update Category",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Immunity Boosters Updated\",\n  \"slug\": \"immunity-boosters\",\n  \"parentId\": null\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api","admin","categories","{{categoryId}}"] }
+              }
+            },
+            {
+              "name": "Delete Category",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api","admin","categories","{{categoryId}}"] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Herbs",
+          "item": [
+            {
+              "name": "List Herbs (Admin)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/herbs", "host": ["{{baseUrl}}"], "path": ["api","admin","herbs"] }
+              }
+            },
+            {
+              "name": "Create Herb",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Giloy\",\n  \"slug\": \"giloy\",\n  \"shortDescription\": \"The root of immunity.\",\n  \"description\": \"Giloy is a climbing shrub known for its anti-inflammatory and immunity-boosting properties.\",\n  \"uses\": [\"Immunity booster\", \"Anti-inflammatory\"],\n  \"benefits\": [\"Reduces fever\", \"Improves digestion\"],\n  \"price\": 199,\n  \"stock\": 100,\n  \"images\": [\"https://example.com/giloy.jpg\"]\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/herbs", "host": ["{{baseUrl}}"], "path": ["api","admin","herbs"] }
+              }
+            },
+            {
+              "name": "Update Herb",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Giloy\",\n  \"shortDescription\": \"The root of immunity.\",\n  \"description\": \"Giloy is a climbing shrub known for its anti-inflammatory and immunity-boosting properties.\",\n  \"uses\": [\"Immunity booster\", \"Anti-inflammatory\"],\n  \"benefits\": [\"Reduces fever\", \"Improves digestion\"],\n  \"price\": 249,\n  \"stock\": 80,\n  \"images\": [\"https://example.com/giloy.jpg\"]\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/herbs/{{herbId}}", "host": ["{{baseUrl}}"], "path": ["api","admin","herbs","{{herbId}}"] }
+              }
+            },
+            {
+              "name": "Delete Herb",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/herbs/{{herbId}}", "host": ["{{baseUrl}}"], "path": ["api","admin","herbs","{{herbId}}"] }
+              }
+            },
+            {
+              "name": "Update Herb Stock",
+              "request": {
+                "method": "PATCH",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"stock\": 150\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/herbs/{{herbId}}/stock", "host": ["{{baseUrl}}"], "path": ["api","admin","herbs","{{herbId}}","stock"] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Products",
+          "item": [
+            {
+              "name": "List Products (Admin)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/products", "host": ["{{baseUrl}}"], "path": ["api","admin","products"] }
+              }
+            },
+            {
+              "name": "Create Product",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Ashwagandha Capsules\",\n  \"slug\": \"ashwagandha-capsules\",\n  \"description\": \"Premium Ashwagandha capsules for stress relief and energy.\",\n  \"ingredients\": [\"Ashwagandha root extract\", \"Black pepper\"],\n  \"price\": 499,\n  \"stock\": 200,\n  \"categoryId\": \"{{categoryId}}\",\n  \"tags\": [\"stress-relief\", \"energy\"],\n  \"images\": [\"https://example.com/ashwagandha.jpg\"]\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/products", "host": ["{{baseUrl}}"], "path": ["api","admin","products"] }
+              }
+            },
+            {
+              "name": "Update Product",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Ashwagandha Capsules\",\n  \"description\": \"Premium Ashwagandha capsules for stress relief and energy.\",\n  \"ingredients\": [\"Ashwagandha root extract\", \"Black pepper\"],\n  \"price\": 549,\n  \"stock\": 180,\n  \"categoryId\": \"{{categoryId}}\",\n  \"tags\": [\"stress-relief\", \"energy\"],\n  \"images\": [\"https://example.com/ashwagandha.jpg\"]\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api","admin","products","{{productId}}"] }
+              }
+            },
+            {
+              "name": "Delete Product",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api","admin","products","{{productId}}"] }
+              }
+            },
+            {
+              "name": "Update Product Stock",
+              "request": {
+                "method": "PATCH",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"stock\": 250\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/products/{{productId}}/stock", "host": ["{{baseUrl}}"], "path": ["api","admin","products","{{productId}}","stock"] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Orders",
+          "item": [
+            {
+              "name": "List All Orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/orders", "host": ["{{baseUrl}}"], "path": ["api","admin","orders"] }
+              }
+            },
+            {
+              "name": "Update Order Status",
+              "request": {
+                "method": "PATCH",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orderStatus\": \"shipped\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/orders/{{orderId}}/status", "host": ["{{baseUrl}}"], "path": ["api","admin","orders","{{orderId}}","status"] },
+                "description": "Valid values: `placed`, `processing`, `shipped`, `delivered`, `cancelled`"
+              }
+            },
+            {
+              "name": "Get Bestsellers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/bestsellers",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api","admin","bestsellers"],
+                  "query": [{ "key": "category", "value": "", "disabled": true, "description": "Optional: filter by category ObjectId" }]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Contact Messages",
+          "item": [
+            {
+              "name": "List Contact Messages",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/contacts", "host": ["{{baseUrl}}"], "path": ["api","admin","contacts"] }
+              }
+            },
+            {
+              "name": "Update Contact Status",
+              "request": {
+                "method": "PATCH",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"closed\"\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/contacts/{{contactId}}/status", "host": ["{{baseUrl}}"], "path": ["api","admin","contacts","{{contactId}}","status"] },
+                "description": "Valid values: `new`, `closed`"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "List All Users",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+              }
+            },
+            {
+              "name": "Update User Role",
+              "request": {
+                "method": "PATCH",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"role\": \"admin\"\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/admin/users/{{userId}}/role", "host": ["{{baseUrl}}"], "path": ["api","admin","users","{{userId}}","role"] },
+                "description": "Valid values: `user`, `admin`"
+              }
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": { "raw": "{{baseUrl}}/api/admin/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["api","admin","users","{{userId}}"] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Uploads",
+          "item": [
+            {
+              "name": "Get Cloudinary Upload Signature",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"folder\": \"herbify\"\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/api/uploads/signature", "host": ["{{baseUrl}}"], "path": ["api","uploads","signature"] }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
