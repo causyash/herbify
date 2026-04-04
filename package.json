@@ -22,5 +22,8 @@
   "type": "commonjs",
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "marked": "^17.0.5"
   }
 }
