@@ -1,6 +1,7 @@
 const express = require("express");
 const { z } = require("zod");
 const { requireAuth } = require("../middleware/auth");
+const { User } = require("../models/User");
 
 const router = express.Router();
 
@@ -22,13 +23,22 @@ router.put("/", requireAuth, async (req, res) => {
   const parsed = z.object({ items: z.array(cartItemSchema).max(200) }).safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ message: "Invalid cart" });
 
-  req.user.cartItems = parsed.data.items.map((i) => ({
-    ...i,
-    itemId: i.itemId,
-    image: i.image || "",
-  }));
-  await req.user.save();
-  res.json({ items: req.user.cartItems });
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        cartItems: parsed.data.items.map((i) => ({
+          ...i,
+          itemId: i.itemId,
+          image: i.image || "",
+        })),
+      },
+    },
+    { new: true, runValidators: true }
+  ).select("-passwordHash");
+
+  if (!updatedUser) return res.status(404).json({ message: "User not found" });
+  res.json({ items: updatedUser.cartItems });
 });
 
 module.exports = { cartRouter: router };
