@@ -43,11 +43,11 @@ function createApp({ dbConnected } = {}) {
   app.use((req, res, next) => {
     res.setHeader(
       "Permissions-Policy",
-      "accelerometer=(), gyroscope=(), magnetometer=(), camera=(), microphone=()"
+      "accelerometer=*, gyroscope=*, magnetometer=*, camera=(), microphone=()"
     );
     res.setHeader(
       "Access-Control-Expose-Headers",
-      "x-rtb-fingerprint-id, request-id"
+      "x-rtb-fingerprint-id, request-id, x-razorpay-signature"
     );
     next();
   });
