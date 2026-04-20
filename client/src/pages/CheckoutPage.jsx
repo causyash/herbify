@@ -120,6 +120,14 @@ export function CheckoutPage() {
                   theme: {
                     color: '#059669',
                   },
+                  image: 'https://cdn-icons-png.flaticon.com/512/3038/3038314.png',
+                  modal: {
+                    ondismiss: () => {
+                      setBusy(false);
+                    },
+                    escape: true,
+                    backdropclose: false
+                  }
                 }
 
                 const rz = new window.Razorpay(opts)

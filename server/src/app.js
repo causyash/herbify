@@ -39,6 +39,19 @@ function createApp({ dbConnected } = {}) {
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());
 
+  // Custom headers to fix Razorpay/Browser warnings
+  app.use((req, res, next) => {
+    res.setHeader(
+      "Permissions-Policy",
+      "accelerometer=(), gyroscope=(), magnetometer=(), camera=(), microphone=()"
+    );
+    res.setHeader(
+      "Access-Control-Expose-Headers",
+      "x-rtb-fingerprint-id, request-id"
+    );
+    next();
+  });
+
   const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     limit: 50,
