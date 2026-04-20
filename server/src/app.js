@@ -41,11 +41,6 @@ function createApp({ dbConnected } = {}) {
 
   // Custom headers to fix Razorpay/Browser warnings
   app.use((req, res, next) => {
-    // Standard Permissions-Policy format
-    res.setHeader(
-      "Permissions-Policy",
-      "accelerometer=*, gyroscope=*, magnetometer=*, camera=(), microphone=()"
-    );
     res.setHeader(
       "Access-Control-Expose-Headers",
       "x-rtb-fingerprint-id, request-id, x-razorpay-signature"
