@@ -30,7 +30,7 @@ function createApp({ dbConnected } = {}) {
 
   app.use(
     cors({
-      origin: true,
+      origin: ["https://herbify-client.vercel.app", "http://localhost:5173"],
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
       allowedHeaders: ["Content-Type", "Authorization", "Accept"]
@@ -41,6 +41,7 @@ function createApp({ dbConnected } = {}) {
 
   // Custom headers to fix Razorpay/Browser warnings
   app.use((req, res, next) => {
+    // Standard Permissions-Policy format
     res.setHeader(
       "Permissions-Policy",
       "accelerometer=*, gyroscope=*, magnetometer=*, camera=(), microphone=()"
