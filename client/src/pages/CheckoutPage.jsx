@@ -118,15 +118,16 @@ export function CheckoutPage() {
                     orderId: order._id,
                   },
                   theme: {
-                    color: '#059669',
+                    color: '#10b981',
                   },
-                  image: 'https://cdn-icons-png.flaticon.com/512/3038/3038314.png',
+                  image: 'https://cdn-icons-png.flaticon.com/512/628/628283.png',
                   modal: {
                     ondismiss: () => {
                       setBusy(false);
                     },
                     escape: true,
-                    backdropclose: false
+                    backdropclose: false,
+                    handle_back: true
                   }
                 }
 
